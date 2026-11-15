@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { 
   LayoutDashboard, Calendar, DollarSign, Users, Scissors, Settings, 
-  TrendingUp, Phone, Mail, Sparkles
+  TrendingUp, Sparkles
 } from 'lucide-react';
 import { Button, Input } from '../../components/ui';
 import { formatCurrency, formatDate } from '../../lib/utils';
@@ -55,37 +55,11 @@ export function AdminPage() {
   }, []);
 
   // Fallback mock data se vazio
-  const displayAppointments = appointments.length > 0 ? appointments : [
-    {
-      id: '1',
-      clientName: 'Mariana Silva',
-      phone: '11952239221',
-      email: 'mariana@email.com',
-      serviceName: 'Nagô Solta',
-      date: '2026-11-09',
-      time: '10:00',
-      price: 330,
-      status: 'confirmed',
-      location: 'salao',
-      cancelCode: 'PEEUSH'
-    },
-    {
-      id: '2',
-      clientName: 'Juliana Costa',
-      phone: '11947609116',
-      email: 'juliana@email.com',
-      serviceName: 'Progressiva Global',
-      date: '2026-11-10',
-      time: '14:30',
-      price: 170,
-      status: 'confirmed',
-      location: 'salao',
-      cancelCode: 'ZZCZGJ'
-    }
-  ];
+  // Nenhum dado real de clientes no frontend público.
+  const displayAppointments = appointments.length > 0 ? appointments : [];
 
   const [transactions] = useState([
-    { id: '1', type: 'in', category: 'Serviço', description: 'Nagô Solta — Mariana', amount: 330, method: 'Pix', date: '2026-11-09' },
+    { id: '1', type: 'in', category: 'Serviço', description: 'Nagô Solta', amount: 330, method: 'Pix', date: '2026-11-09' },
     { id: '2', type: 'out', category: 'Produtos de uso', description: 'Kits de fibra e pomada', amount: 80, method: 'Dinheiro', date: '2026-11-08' }
   ]);
 
@@ -102,7 +76,7 @@ export function AdminPage() {
             <Sparkles className="w-5 h-5 text-amber-400" />
             <span>Nateliê Admin</span>
           </div>
-          <p className="text-xs text-zinc-400 mt-1">Diadema · SP</p>
+          <p className="text-xs text-zinc-400 mt-1">Gestão do salão</p>
         </div>
 
         <nav className="flex flex-col gap-1">
@@ -152,7 +126,7 @@ export function AdminPage() {
 
         <div className="mt-auto pt-6 border-t border-zinc-800 text-xs text-zinc-500 space-y-1">
           <p className="font-semibold text-zinc-400">Naty Nascimento</p>
-          <p>WhatsApp: +55 11 94760-9116</p>
+          <p>WhatsApp comercial configurado</p>
           <p className="text-amber-400 font-medium pt-2">🟢 Sistema Online</p>
         </div>
       </aside>
@@ -214,10 +188,7 @@ export function AdminPage() {
                   <tbody className="divide-y divide-zinc-800/50">
                     {displayAppointments.map(app => (
                       <tr key={app.id} className="hover:bg-zinc-800/30">
-                        <td className="py-4 font-medium text-white">
-                          {app.clientName}
-                          <div className="text-xs text-zinc-500 font-normal">{app.phone}</div>
-                        </td>
+                        <td className="py-4 font-medium text-white">{app.clientName}</td>
                         <td className="py-4 text-zinc-300">{app.serviceName}</td>
                         <td className="py-4 text-zinc-300">{formatDate(app.date)} às {app.time}</td>
                         <td className="py-4 font-medium text-amber-400">{formatCurrency(app.price)}</td>
@@ -227,14 +198,8 @@ export function AdminPage() {
                           </span>
                         </td>
                         <td className="py-4 text-right">
-                          <a 
-                            href={`https://wa.me/55${app.phone.replace(/\D/g, '')}`} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-500/10 hover:bg-green-500/20 text-green-400 text-xs font-medium border border-green-500/30 transition-all"
-                          >
-                            <Phone className="w-3.5 h-3.5" />
-                            WhatsApp
+                          <a className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-500/10 hover:bg-green-500/20 text-green-400 text-xs font-medium border border-green-500/30 transition-all">
+                            <span className="text-xs font-medium text-green-400">Ver detalhes</span>
                           </a>
                         </td>
                       </tr>
@@ -262,29 +227,15 @@ export function AdminPage() {
               </div>
 
               <div className="space-y-4">
+                {displayAppointments.length === 0 && (
+                  <p className="text-sm text-zinc-400">Nenhum agendamento sincronizado no momento.</p>
+                )}
                 {displayAppointments.map(app => (
                   <div key={app.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-zinc-800/40 border border-zinc-800">
                     <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-white">{app.clientName}</span>
-                        <span className="text-xs text-zinc-400">({app.phone})</span>
-                      </div>
+                      <div className="font-bold text-white">{app.clientName}</div>
                       <div className="text-sm text-amber-300 font-medium">💇‍♀️ {app.serviceName}</div>
-                      <div className="text-xs text-zinc-400 flex items-center gap-2">
-                        <span>📅 {formatDate(app.date)} às {app.time}</span>
-                        <span>•</span>
-                        <span>📋 Código: {app.cancelCode}</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <a 
-                        href={`https://wa.me/55${app.phone.replace(/\D/g, '')}`} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="px-4 py-2 rounded-xl bg-green-500 hover:bg-green-600 text-white text-sm font-medium transition-all"
-                      >
-                        Abrir WhatsApp
-                      </a>
+                      <div className="text-xs text-zinc-400">📅 {formatDate(app.date)} às {app.time}</div>
                     </div>
                   </div>
                 ))}
@@ -329,20 +280,9 @@ export function AdminPage() {
             <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="font-semibold text-white">Clientes Cadastrados</h3>
-                <span className="text-xs text-zinc-400">2 clientes ativos</span>
+                <span className="text-xs text-zinc-400">Exibidos via API / Admin local</span>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-4 rounded-xl bg-zinc-800/40 border border-zinc-800 space-y-2">
-                  <div className="font-bold text-white">Mariana Silva</div>
-                  <div className="text-xs text-zinc-400 flex items-center gap-1.5"><Phone className="w-3.5 h-3.5 text-amber-400" /> (11) 95223-9221</div>
-                  <div className="text-xs text-zinc-400 flex items-center gap-1.5"><Mail className="w-3.5 h-3.5 text-amber-400" /> mariana@email.com</div>
-                </div>
-                <div className="p-4 rounded-xl bg-zinc-800/40 border border-zinc-800 space-y-2">
-                  <div className="font-bold text-white">Juliana Costa</div>
-                  <div className="text-xs text-zinc-400 flex items-center gap-1.5"><Phone className="w-3.5 h-3.5 text-amber-400" /> (11) 94760-9116</div>
-                  <div className="text-xs text-zinc-400 flex items-center gap-1.5"><Mail className="w-3.5 h-3.5 text-amber-400" /> juliana@email.com</div>
-                </div>
-              </div>
+              <p className="text-xs text-zinc-400">Os dados reais de clientes ficam armazenados exclusivamente no banco de dados local do backend.</p>
             </div>
           </div>
         )}
@@ -385,8 +325,8 @@ export function AdminPage() {
 
             <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-4 max-w-xl">
               <Input label="Nome do Salão" defaultValue="Nateliê Hair" />
-              <Input label="Endereço" defaultValue="Av. Paranapanema, 637 - Diadema - SP" />
-              <Input label="WhatsApp Principal" defaultValue="+55 11 94760-9116" />
+              <Input label="Endereço" placeholder="Endereço do salão" />
+              <Input label="WhatsApp Principal" placeholder="(00) 00000-0000" />
               <Button className="bg-amber-500 hover:bg-amber-400 text-zinc-900 font-semibold w-full">
                 Salvar Alterações
               </Button>

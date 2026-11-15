@@ -17,9 +17,9 @@ interface Transaction {
 export function AdminFinancial() {
   const [transactions, setTransactions] = useState<Transaction[]>([
     // Exemplo de transações
-    { id: '1', type: 'income', category: 'Serviço', description: 'Nagô Feminino - Ana Julia', amount: 180, date: '2026-11-08', paymentMethod: 'Pix' },
+    { id: '1', type: 'income', category: 'Serviço', description: 'Nagô Feminino', amount: 180, date: '2026-11-08', paymentMethod: 'Pix' },
     { id: '2', type: 'expense', category: 'Produto', description: 'Shampoo profissional', amount: 45, date: '2026-11-07' },
-    { id: '3', type: 'income', category: 'Serviço', description: 'Escova Longa - Maria Silva', amount: 60, date: '2026-11-07', paymentMethod: 'Dinheiro' },
+    { id: '3', type: 'income', category: 'Serviço', description: 'Escova Longa', amount: 60, date: '2026-11-07', paymentMethod: 'Dinheiro' },
     { id: '4', type: 'expense', category: 'Aluguel', description: 'Aluguel do espaço', amount: 500, date: '2026-11-05' },
   ]);
   

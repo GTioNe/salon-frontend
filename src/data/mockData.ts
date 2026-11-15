@@ -47,44 +47,11 @@ export const MOCK_PROFESSIONALS: Professional[] = [
   },
 ];
 
-export const MOCK_CLIENTS: Client[] = [
-  {
-    id: 'client-1',
-    name: 'Ana Julia',
-    phone: '(11) 98765-4321',
-    email: 'ana@email.com',
-    createdAt: '2026-11-01T10:00:00Z',
-    lastVisit: '2026-11-08T14:30:00Z',
-    totalVisits: 3,
-    totalSpent: 450,
-    preferences: ['Nagô Feminino'],
-  },
-];
+// Não mantenha dados reais de clientes no frontend público.
+export const MOCK_CLIENTS: Client[] = [];
 
-const generateConfirmationCode = () => `NAT-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
-
-export const MOCK_APPOINTMENTS: Appointment[] = [
-  {
-    id: 'apt-1',
-    clientId: 'client-1',
-    clientName: 'Ana Julia',
-    clientPhone: '(11) 98765-4321',
-    clientEmail: 'ana@email.com',
-    serviceIds: ['nago-fem'],
-    serviceNames: ['Nagô Feminino'],
-    professionalId: 'prof-1',
-    professionalName: 'Naty Nascimento',
-    date: '2026-11-10',
-    time: '14:00',
-    duration: 180,
-    totalPrice: 180,
-    status: 'confirmed',
-    notes: 'Espaço Nateliê',
-    createdAt: '2026-11-08T10:00:00Z',
-    updatedAt: '2026-11-08T10:00:00Z',
-    confirmationCode: generateConfirmationCode(),
-  },
-];
+// Nenhum agendamento real de cliente no frontend público.
+export const MOCK_APPOINTMENTS: Appointment[] = [];
 
 export const getServicesByCategory = (category: ServiceCategory) => 
   MOCK_SERVICES.filter(s => s.category === category);

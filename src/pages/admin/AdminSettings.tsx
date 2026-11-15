@@ -36,9 +36,9 @@ export function AdminSettings() {
             <h3 className="font-display font-semibold text-xl gradient-text">Informações do Salão</h3>
             <div className="space-y-4">
               <Input label="Nome do Salão" placeholder="Nateliê Hair" defaultValue="Nateliê Hair" />
-              <Input label="E-mail de Contato" type="email" placeholder="natalianascimento.NK@gmail.com" defaultValue="natalianascimento.NK@gmail.com" />
-              <Input label="Telefone" type="tel" placeholder="(11) 94760-9116" defaultValue="(11) 94760-9116" />
-              <Input label="Endereço" placeholder="Av. Paranapanema, 637 - Diadema - SP" defaultValue="Av. Paranapanema, 637 - Diadema - SP" />
+              <Input label="E-mail de Contato" type="email" placeholder="contato@seusalao.com" />
+              <Input label="Telefone" type="tel" placeholder="(00) 00000-0000" />
+              <Input label="Endereço" placeholder="Endereço do salão" />
               <div>
                 <label className="label-field">Horário de Funcionamento</label>
                 <div className="grid grid-cols-2 md:grid-cols-7 gap-3">
