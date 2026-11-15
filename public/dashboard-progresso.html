@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Progresso - Nateliê Estilos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@0.1.0/font/lucide.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #09090b; color: #f4f4f5; }
+        .glass { background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(63, 63, 70, 0.5); }
+        .status-dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+        .done { background-color: #10b981; box-shadow: 0 0 10px #10b981; }
+        .doing { background-color: #f59e0b; box-shadow: 0 0 10px #f59e0b; }
+        .todo { background-color: #71717a; }
+    </style>
+</head>
+<body class="p-4 md:p-10">
+    <div class="max-w-4xl mx-auto space-y-8">
+        <!-- Header -->
+        <header class="flex justify-between items-end border-b border-zinc-800 pb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-white">Dashboard do Projeto</h1>
+                <p class="text-zinc-400">Nateliê Estilos — Salão & Estética</p>
+            </div>
+            <div class="text-right">
+                <span class="text-xs uppercase tracking-widest text-zinc-500 font-bold">Status Geral</span>
+                <div class="flex items-center text-pink-400 font-semibold">
+                    <span class="status-dot done"></span> Em Desenvolvimento Ativo
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="glass p-6 rounded-2xl">
+                <p class="text-zinc-500 text-sm font-medium">Concluído</p>
+                <p class="text-4xl font-bold text-emerald-500">95%</p>
+            </div>
+            <div class="glass p-6 rounded-2xl">
+                <p class="text-zinc-500 text-sm font-medium">Páginas</p>
+                <p class="text-4xl font-bold text-white">6</p>
+            </div>
+            <div class="glass p-6 rounded-2xl">
+                <p class="text-zinc-500 text-sm font-medium">Exp. da Naty</p>
+                <p class="text-4xl font-bold text-pink-500">18 Anos</p>
+            </div>
+        </div>
+
+        <!-- Lista de Tarefas -->
+        <div class="space-y-6">
+            <h2 class="text-xl font-semibold flex items-center gap-2">
+                📌 Roadmap de Entrega
+            </h2>
+            
+            <div class="glass rounded-3xl overflow-hidden">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-zinc-800 bg-zinc-900/50">
+                            <th class="p-4 text-zinc-400 font-medium">Tarefa</th>
+                            <th class="p-4 text-zinc-400 font-medium">Status</th>
+                            <th class="p-4 text-zinc-400 font-medium text-right">Responsável</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-800">
+                        <tr>
+                            <td class="p-4">Reconstrução da Landing Page (High-End)</td>
+                            <td class="p-4"><span class="px-2 py-1 bg-emerald-500/10 text-pink-400 text-xs rounded-full border border-emerald-500/20">Concluído</span></td>
+                            <td class="p-4 text-right text-zinc-500 text-sm">Scriptcombo</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4">Inserção da Foto da Naty (Transparente)</td>
+                            <td class="p-4"><span class="px-2 py-1 bg-emerald-500/10 text-pink-400 text-xs rounded-full border border-emerald-500/20">Concluído</span></td>
+                            <td class="p-4 text-right text-zinc-500 text-sm">Scriptcombo</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4">Correção de Experiência (18 Anos)</td>
+                            <td class="p-4"><span class="px-2 py-1 bg-emerald-500/10 text-pink-400 text-xs rounded-full border border-emerald-500/20">Concluído</span></td>
+                            <td class="p-4 text-right text-zinc-500 text-sm">Scriptcombo</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4">Ajuste de Horários (Duração em Horas)</td>
+                            <td class="p-4"><span class="px-2 py-1 bg-emerald-500/10 text-pink-400 text-xs rounded-full border border-emerald-500/20">Concluído</span></td>
+                            <td class="p-4 text-right text-zinc-500 text-sm">Scriptcombo</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4">Agendamento com E-mail Opcional</td>
+                            <td class="p-4"><span class="px-2 py-1 bg-emerald-500/10 text-pink-400 text-xs rounded-full border border-emerald-500/20">Concluído</span></td>
+                            <td class="p-4 text-right text-zinc-500 text-sm">Scriptcombo</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4">Bot de WhatsApp (Cancelamento Dry)</td>
+                            <td class="p-4"><span class="px-2 py-1 bg-emerald-500/10 text-pink-400 text-xs rounded-full border border-emerald-500/20">Concluído</span></td>
+                            <td class="p-4 text-right text-zinc-500 text-sm">Scriptcombo</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4">Integração Real do Painel Admin (API)</td>
+                            <td class="p-4"><span class="px-2 py-1 bg-emerald-500/10 text-pink-400 text-xs rounded-full border border-emerald-500/20">Concluído</span></td>
+                            <td class="p-4 text-right text-zinc-500 text-sm">Scriptcombo</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4">Configuração SMTP (E-mails reais)</td>
+                            <td class="p-4"><span class="px-2 py-1 bg-zinc-800 text-zinc-500 text-xs rounded-full border border-zinc-700">Pendente</span></td>
+                            <td class="p-4 text-right text-zinc-500 text-sm">Scriptcombo</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Links Úteis -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="glass p-6 rounded-2xl flex items-center justify-between group cursor-pointer hover:bg-zinc-800/50 transition-all">
+                <div>
+                    <h3 class="font-bold text-white">Ver Site Ao Vivo</h3>
+                    <p class="text-xs text-zinc-500">Acesse http://localhost:5173</p>
+                </div>
+                <div class="text-pink-500">↗</div>
+            </div>
+            <div class="glass p-6 rounded-2xl flex items-center justify-between group cursor-pointer hover:bg-zinc-800/50 transition-all">
+                <div>
+                    <h3 class="font-bold text-white">Painel Administrativo</h3>
+                    <p class="text-xs text-zinc-500">Acesse http://localhost:5173/admin</p>
+                </div>
+                <div class="text-pink-500">↗</div>
+            </div>
+        </div>
+
+        <footer class="text-center text-zinc-600 text-xs pt-10">
+            &copy; 2026 Nateliê Estilos • Desenvolvido com foco em excelência.
+        </footer>
+    </div>
+</body>
+</html>
