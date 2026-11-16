@@ -6,6 +6,8 @@ import { MOCK_SERVICES } from '../data/mockData';
 import { useSalonStore } from '../store/salonStore';
 import { CATEGORIES, type Service } from '../types';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+
 const STEPS = [
   { id: 1, title: 'Serviços', icon: '✂️' },
   { id: 2, title: 'Data & Hora', icon: '📅' },
@@ -132,7 +134,7 @@ export function BookingPage() {
     
     let backendCode = '';
     try {
-      const response = await fetch('http://localhost:3001/api/reserve', {
+      const response = await fetch(`${API_BASE}/reserve`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
