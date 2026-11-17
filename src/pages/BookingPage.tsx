@@ -417,7 +417,7 @@ function Step1Services({ selectedServices, onSelectServices, onNext }: {
                     </div>
                     <p className="text-zinc-600 dark:text-zinc-400 text-sm mt-1 line-clamp-1">{service.description}</p>
                     <div className="flex items-center gap-3 mt-2 text-xs text-zinc-400">
-                      <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {formatDuration(service.duration)}</span>
+                      <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {`aproximadamente ` + formatDuration(service.duration)}</span>
                       {service.popular && <span className="px-2 py-0.5 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full text-xs font-medium">Popular</span>}
                     </div>
                   </div>
@@ -443,7 +443,7 @@ function Step1Services({ selectedServices, onSelectServices, onNext }: {
             Total estimado: <span className="font-bold text-amber-700 dark:text-amber-300">
               {formatCurrency(selectedServices.reduce((sum: number, id: string) => sum + (MOCK_SERVICES.find((s) => s.id === id)?.price || 0), 0))}
             </span> • 
-            {formatDuration(selectedServices.reduce((sum: number, id: string) => sum + (MOCK_SERVICES.find((s) => s.id === id)?.duration || 0), 0))}
+            {`aproximadamente ` + formatDuration(selectedServices.reduce((sum: number, id: string) => sum + (MOCK_SERVICES.find((s) => s.id === id)?.duration || 0), 0))}
           </div>
         </div>
       )}
