@@ -3,11 +3,11 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import type { Service, Professional, Client, Appointment, AppointmentStatus } from '../types';
 import { MOCK_SERVICES, MOCK_PROFESSIONALS, MOCK_CLIENTS, MOCK_APPOINTMENTS } from '../data/mockData';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/api\/?$/, '');
 
 async function fetchApi<T>(url: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${url}`, {
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '', ...options?.headers },
     ...options,
   });
   if (!res.ok) throw new Error(`API ${res.status}`);
@@ -47,7 +47,7 @@ interface SalonState {
   deleteAppointment: (id: string) => void;
   getAppointmentsByDate: (date: string) => Appointment[];
   getAppointmentsByProfessional: (professionalId: string, date: string) => Appointment[];
-  getAvailableSlots: (date: string, professionalId?: string, duration?: number) => Promise<string[]>;
+  getAvailableSlots: (date: string, professionalId?: string, duration?: number, serviceId?: string) => Promise<string[]>;
   
   // UI Actions
   toggleDarkMode: () => void;
@@ -207,52 +207,20 @@ export const useSalonStore = create<SalonState>()(
         return get().appointments.filter((a) => a.professionalId === professionalId && a.date === date);
       },
       
-      getAvailableSlots: async (date: string, professionalId?: string, duration?: number) => {
+      getAvailableSlots: async (date: string, professionalId?: string, duration?: number, serviceId?: string) => {
         try {
-          // backend route is /api/slots/:date/:serviceId
-          // for now, use first selected service if none provided
-          const serviceId = 'nago-fem'; // fallback
-          const slots = await fetchApi<string[]>(`/api/slots/${date}/${serviceId}`);
+          // backend route: /api/slots/:date/:serviceId?duration=
+          // if serviceId provided, use it + duration from it; else fallback to 30min default
+          const svc = serviceId || 'nago-fem';
+          const svcData = MOCK_SERVICES.find(s => s.id === svc);
+          const effectiveDuration = duration || (svcData ? svcData.duration : 30);
+          const params = effectiveDuration ? `?duration=${effectiveDuration}` : '';
+          const slots = await fetchApi<string[]>(`/api/slots/${date}/${svc}${params}`);
           return slots;
         } catch (e) {
-          console.log('Backend slots offline, using local:', e);
-          // fallback to local logic
-          const appointments = professionalId 
-            ? get().getAppointmentsByProfessional(professionalId, date)
-            : get().getAppointmentsByDate(date);
-          
-          const professional = professionalId 
-            ? get().professionals.find(p => p.id === professionalId)
-            : get().professionals[0];
-          
-          if (!professional) return [];
-          
-          const dayOfWeek = new Date(date).getDay().toString();
-          const schedule = professional.schedule[dayOfWeek];
-          if (!schedule) return [];
-          
-          const slots: string[] = [];
-          const [startHour, startMin] = schedule.start.split(':').map(Number);
-          const [endHour, endMin] = schedule.end.split(':').map(Number);
-          
-          let currentMinutes = startHour * 60 + startMin;
-          const endMinutes = endHour * 60 + endMin;
-          
-          while (currentMinutes + (duration || 30) <= endMinutes) {
-            const hour = Math.floor(currentMinutes / 60).toString().padStart(2, '0');
-            const min = (currentMinutes % 60).toString().padStart(2, '0');
-            const time = `${hour}:${min}`;
-            
-            const isBooked = appointments.some(a => a.time === time && a.status !== 'cancelled');
-            
-            if (!isBooked) {
-              slots.push(time);
-            }
-            
-            currentMinutes += 30;
-          }
-          
-          return slots;
+          console.error('Erro ao buscar slots do backend:', e);
+          // Se falhar, retorna lista vazia em vez de mostrar horários locais não confiáveis
+          return [];
         }
       },
       
