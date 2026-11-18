@@ -3,10 +3,17 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import type { Service, Professional, Client, Appointment, AppointmentStatus } from '../types';
 import { MOCK_SERVICES, MOCK_PROFESSIONALS, MOCK_CLIENTS, MOCK_APPOINTMENTS } from '../data/mockData';
 
-const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/api\/?$/, '');
+const getApiBase = () => {
+  const envUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+  // Remove qualquer /api do final para não duplicar na montagem das rotas
+  return envUrl.replace(/\/api\/?$/, '');
+};
 
 async function fetchApi<T>(url: string, options?: RequestInit): Promise<T> {
-  const res = await fetch(`${API_BASE}${url}`, {
+  const baseUrl = getApiBase();
+  // Garante que url comece com /api
+  const endpoint = url.startsWith('/api') ? url : `/api${url}`;
+  const res = await fetch(`${baseUrl}${endpoint}`, {
     headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '', ...options?.headers },
     ...options,
   });
@@ -207,7 +214,7 @@ export const useSalonStore = create<SalonState>()(
         return get().appointments.filter((a) => a.professionalId === professionalId && a.date === date);
       },
       
-      getAvailableSlots: async (date: string, professionalId?: string, duration?: number, serviceId?: string) => {
+      getAvailableSlots: async (date: string, _professionalId?: string, duration?: number, serviceId?: string) => {
         try {
           // backend route: /api/slots/:date/:serviceId?duration=
           // if serviceId provided, use it + duration from it; else fallback to 30min default

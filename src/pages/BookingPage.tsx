@@ -6,7 +6,7 @@ import { MOCK_SERVICES } from '../data/mockData';
 import { useSalonStore } from '../store/salonStore';
 import { CATEGORIES, type Service } from '../types';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 const STEPS = [
   { id: 1, title: 'Serviços', icon: '✂️' },
@@ -80,7 +80,7 @@ export function BookingPage() {
           const s = MOCK_SERVICES.find((svc) => svc.id === id);
           return sum + (s?.duration || 0);
         }, 0);
-        const slots = await storeGetAvailableSlots(selectedDate, undefined, totalDuration);
+        const slots = await storeGetAvailableSlots(selectedDate, undefined, totalDuration, selectedServices[0] || 'nago-fem');
         setAvailableSlots(slots);
       } catch (err) {
         console.error('Error fetching slots:', err);
