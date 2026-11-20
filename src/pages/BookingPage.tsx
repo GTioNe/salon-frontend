@@ -240,12 +240,14 @@ export function BookingPage() {
     <div className="max-w-2xl mx-auto space-y-6 px-4 py-8">
       <ChristmasEffects />
       {/* Natal Banner */}
-      <div className="mb-8 p-6 rounded-2xl bg-red-500/10 border border-red-500/20 text-center">
+      <div className="relative z-10 mb-8 p-6 rounded-2xl bg-red-950/95 border border-red-500/30 text-center">
         <div className="inline-flex items-center gap-2 bg-red-500/20 rounded-full px-4 py-2">
           <TreePine className="w-5 h-5 text-red-400" />
-          <span className="font-medium text-red-400">🎄 Nateliê Hair — Temporada de Festas! 🎄</span>
+          <span className="font-medium text-red-300">🎄 Um Natal especial no Nateliê Hair 🎄</span>
         </div>
-        <p className="mt-3 text-zinc-300 text-sm">Vamos tornar seu natal incrível! 🎁✨ Agende seu horário e garanta o melhor presente para quem você ama.</p>
+        <p className="mt-3 text-zinc-200 text-sm leading-relaxed">
+          Meus amores, sou a Naty Nascimento e há 18 anos cuido dos cabelos e da autoestima de vocês. Neste Natal, quero receber cada uma com o mesmo carinho, paciência e respeito de sempre. A agenda de dezembro está aberta! Para reservar seu horário, é necessário um sinal de <strong className="text-white">R$ 50,00</strong>, descontado do valor do serviço. Vou amar cuidar de você! 💕
+        </p>
       </div>
 
       {/* Progress Bar */}
