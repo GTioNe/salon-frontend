@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Calendar, Clock, User, Check, ChevronLeft, ChevronRight, MessageCircle, Sparkles, MapPin } from 'lucide-react';
+import { Calendar, Clock, User, Check, ChevronLeft, ChevronRight, MessageCircle, Sparkles, MapPin, TreePine, DollarSign } from 'lucide-react';
 import { Button, Input } from '../components/ui';
+import { ChristmasEffects } from '../components/ChristmasEffects';
 import { formatCurrency, formatDate, formatDuration } from '../lib/utils';
 import { MOCK_SERVICES } from '../data/mockData';
 import { useSalonStore } from '../store/salonStore';
 import { CATEGORIES, type Service } from '../types';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
+const PIX_KEY = 'Nubank11 979696798 Nubank';
+const PIX_QR_URL = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(PIX_KEY)}`;
 
 const STEPS = [
   { id: 1, title: 'Serviços', icon: '✂️' },
@@ -94,6 +98,9 @@ export function BookingPage() {
   const selectedServicesData = selectedServices.map((id) => MOCK_SERVICES.find((s) => s.id === id)).filter(Boolean) as Service[];
   const totalPrice = selectedServicesData.reduce((sum: number, s: Service) => sum + s.price, 0);
   const totalDuration = selectedServicesData.reduce((sum: number, s: Service) => sum + s.duration, 0);
+
+  const isDecember = selectedDate.startsWith('2026-12');
+  const pixAmount = isDecember ? 50 : totalPrice;
 
   const validateStep = (step: number) => {
     const newErrors: Record<string, string> = {};
@@ -231,6 +238,16 @@ export function BookingPage() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6 px-4 py-8">
+      <ChristmasEffects />
+      {/* Natal Banner */}
+      <div className="mb-8 p-6 rounded-2xl bg-red-500/10 border border-red-500/20 text-center">
+        <div className="inline-flex items-center gap-2 bg-red-500/20 rounded-full px-4 py-2">
+          <TreePine className="w-5 h-5 text-red-400" />
+          <span className="font-medium text-red-400">🎄 Nateliê Hair — Temporada de Festas! 🎄</span>
+        </div>
+        <p className="mt-3 text-zinc-300 text-sm">Vamos tornar seu natal incrível! 🎁✨ Agende seu horário e garanta o melhor presente para quem você ama.</p>
+      </div>
+
       {/* Progress Bar */}
       <div className="hidden md:flex items-center justify-between mb-8">
         {STEPS.map((step, i) => (
@@ -298,6 +315,8 @@ export function BookingPage() {
               clientData={clientData}
               totalPrice={totalPrice}
               totalDuration={totalDuration}
+              pixAmount={pixAmount}
+              isDecember={isDecember}
               onWhatsApp={sendWhatsApp}
               onRestart={resetWizard}
             />
@@ -745,11 +764,13 @@ function Step3ClientData({ clientData, onChange, errors, submitError, onNext }: 
   );
 }
 
-function Step4Confirmation({ confirmationData, clientData, totalPrice, totalDuration, onWhatsApp, onRestart }: { 
+function Step4Confirmation({ confirmationData, clientData, totalPrice, totalDuration, pixAmount, isDecember, onWhatsApp, onRestart }: { 
   confirmationData: ConfirmationData | null;
   clientData: ClientData;
   totalPrice: number;
   totalDuration: number;
+  pixAmount: number;
+  isDecember: boolean;
   onWhatsApp: () => void;
   onRestart: () => void;
 }) {
@@ -812,6 +833,53 @@ function Step4Confirmation({ confirmationData, clientData, totalPrice, totalDura
               <p className="font-medium text-zinc-900 dark:text-white">{clientData.name}</p>
               <p className="text-zinc-500 dark:text-zinc-400 text-sm">{clientData.phone}{clientData.email ? ` • ${clientData.email}` : ''}</p>
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* PIX Payment */}
+      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+              <DollarSign className="w-5 h-5 text-emerald-400" />
+            </div>
+            <div>
+              <p className="font-medium text-white">Pagamento via PIX</p>
+              <p className="text-sm text-zinc-400">
+                {isDecember ? 'Sinal de R$ 50,00 para garantir seu horário' : 'Pague agora para confirmar seu horário'}
+              </p>
+            </div>
+          </div>
+          <span className="font-bold text-emerald-400 text-lg">{formatCurrency(pixAmount)}</span>
+        </div>
+        {isDecember && (
+          <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400 space-y-1">
+            <p className="font-bold">🎄 Temporada de Festas — Reserva com Sinal</p>
+            <p>Para garantir seu horário em dezembro, é necessário pagar um sinal de <strong>R$ 50,00</strong> via PIX.</p>
+            <p>Este valor é <strong>descontado do total</strong> do serviço. O restante ({formatCurrency(totalPrice - 50)}) é pago no dia do atendimento.</p>
+          </div>
+        )}
+        <div className="flex flex-col sm:flex-row items-center gap-6">
+          <img
+            src={PIX_QR_URL}
+            alt="QR Code PIX"
+            className="w-[180px] h-[180px] rounded-xl border-4 border-white bg-white p-2"
+          />
+          <div className="flex-1 space-y-3">
+            <p className="text-sm text-zinc-300">Escaneie o QR Code com o app do seu banco ou copie a chave PIX abaixo:</p>
+            <div className="flex items-center gap-2">
+              <code className="flex-1 bg-zinc-800 text-zinc-300 text-sm rounded-lg px-3 py-2 truncate">{PIX_KEY}</code>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => navigator.clipboard.writeText(PIX_KEY)}
+                className="shrink-0"
+              >
+                Copiar
+              </Button>
+            </div>
+            <p className="text-xs text-zinc-500">Após pagar o sinal, envie o comprovante no WhatsApp da Naty para confirmar a reserva.</p>
           </div>
         </div>
       </div>
