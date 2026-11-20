@@ -243,11 +243,22 @@ export function BookingPage() {
       <div className="relative z-10 mb-8 p-6 rounded-2xl bg-red-950/95 border border-red-500/30 text-center">
         <div className="inline-flex items-center gap-2 bg-red-500/20 rounded-full px-4 py-2">
           <TreePine className="w-5 h-5 text-red-400" />
-          <span className="font-medium text-red-300">🎄 Um Natal especial no Nateliê Hair 🎄</span>
+          <span className="font-medium text-red-300">🎄 Agenda de Dezembro | Nateliê Hair 🎄</span>
         </div>
-        <p className="mt-3 text-zinc-200 text-sm leading-relaxed">
-          Meus amores, sou a Naty Nascimento e cuido dos cabelos e da autoestima de vocês com todo carinho. Neste Natal, quero receber cada uma com a mesma paciência e respeito de sempre. A agenda de dezembro está aberta! Para reservar seu horário, é necessário um sinal de <strong className="text-white">R$ 50,00</strong>, descontado do valor do serviço. Vou amar cuidar de você! 💕
-        </p>
+        <div className="mt-4 space-y-3 text-zinc-200 text-sm leading-relaxed text-left">
+          <p>
+            Os agendamentos para o período de <strong className="text-white">Natal e Ano Novo</strong> já estão abertos. Devido à alta procura nesta época, recomendamos que reserve sua data o quanto antes.
+          </p>
+          <p>
+            <strong className="text-white">Regra de agendamento:</strong> a confirmação do horário é feita mediante sinal de <strong className="text-white">R$ 50,00</strong>, que será descontado do valor final do serviço.
+          </p>
+          <p className="text-amber-200/90">
+            ⚠️ Em caso de não comparecimento ou cancelamento sem aviso com pelo menos <strong className="text-white">1 dia de antecedência</strong>, o valor do sinal <strong className="text-white">não será estornado</strong>.
+          </p>
+          <p>
+            Selecione o serviço desejado e garanta sua vaga! 💕
+          </p>
+        </div>
       </div>
 
       {/* Progress Bar */}
