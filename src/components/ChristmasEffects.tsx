@@ -77,11 +77,11 @@ export function ChristmasEffects() {
 
       {/* Corda Vertical na Borda Direita (Tiled Repeat-Y) */}
       <div
-        className="pointer-events-none fixed z-50 hidden sm:block"
+        className="pointer-events-none fixed z-50"
         style={{
           top: 0,
           bottom: 0,
-          right: '8px',
+          right: '6px',
           width: '16px',
           backgroundImage: "url('/icons/Gemini_Generated_Image_8q0wd08q0wd08q0w.jpg')",
           backgroundRepeat: 'repeat-y',
@@ -94,9 +94,9 @@ export function ChristmasEffects() {
 
       {/* Papai Noel Descendo/Subindo na Corda conforme Scroll */}
       <div
-        className="pointer-events-none fixed z-50 hidden sm:block transition-transform duration-75 ease-out"
+        className="pointer-events-none fixed z-50 transition-transform duration-75 ease-out"
         style={{
-          right: '-4px',
+          right: '-2px',
           top: `${15 + scrollProgress * 70}vh`,
           width: '56px',
           height: '70px',
