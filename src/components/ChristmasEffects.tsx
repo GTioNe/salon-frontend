@@ -83,7 +83,7 @@ export function ChristmasEffects() {
           bottom: 0,
           right: '6px',
           width: '16px',
-          backgroundImage: "url('/icons/Gemini_Generated_Image_8q0wd08q0wd08q0w.jpg')",
+          backgroundImage: "url('/icons/Gemini_Generated_Image_8q0wd08q0wd08q0w.png')",
           backgroundRepeat: 'repeat-y',
           backgroundPosition: 'center top',
           backgroundSize: '8px auto',
@@ -104,7 +104,7 @@ export function ChristmasEffects() {
         aria-hidden="true"
       >
         <img
-          src="/icons/papai-noel-corda-transparente.png"
+          src="/icons/Gemini_Generated_Image_iqu0wgiqu0wgiqu0.png"
           alt="Papai Noel na Corda"
           className="w-full h-full object-contain filter drop-shadow(0 4px 6px rgba(0,0,0,0.5))"
         />
