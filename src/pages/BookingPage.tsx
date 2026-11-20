@@ -246,7 +246,7 @@ export function BookingPage() {
           <span className="font-medium text-red-300">🎄 Um Natal especial no Nateliê Hair 🎄</span>
         </div>
         <p className="mt-3 text-zinc-200 text-sm leading-relaxed">
-          Meus amores, sou a Naty Nascimento e há 18 anos cuido dos cabelos e da autoestima de vocês. Neste Natal, quero receber cada uma com o mesmo carinho, paciência e respeito de sempre. A agenda de dezembro está aberta! Para reservar seu horário, é necessário um sinal de <strong className="text-white">R$ 50,00</strong>, descontado do valor do serviço. Vou amar cuidar de você! 💕
+          Meus amores, sou a Naty Nascimento e cuido dos cabelos e da autoestima de vocês com todo carinho. Neste Natal, quero receber cada uma com a mesma paciência e respeito de sempre. A agenda de dezembro está aberta! Para reservar seu horário, é necessário um sinal de <strong className="text-white">R$ 50,00</strong>, descontado do valor do serviço. Vou amar cuidar de você! 💕
         </p>
       </div>
 
