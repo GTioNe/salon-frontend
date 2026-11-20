@@ -107,7 +107,6 @@ export function ChristmasEffects() {
           src="/icons/Gemini_Generated_Image_8q0wd08q0wd08q0w (1).jpg"
           alt="Papai Noel na Corda"
           className="w-full h-full object-contain filter drop-shadow(0 4px 6px rgba(0,0,0,0.5))"
-          style={{ mixBlendMode: 'screen' }}
         />
       </div>
     </>
