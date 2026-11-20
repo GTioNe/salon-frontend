@@ -1,21 +1,48 @@
 import { useEffect, useState } from 'react';
 
-const flakes = Array.from({ length: 25 }, (_, i) => ({
+// Flocos de neve caindo
+const flakes = Array.from({ length: 20 }, (_, i) => ({
   id: i,
   left: `${Math.random() * 100}%`,
-  delay: `${Math.random() * 10}s`,
-  duration: `${8 + Math.random() * 12}s`,
-  size: `${10 + Math.random() * 14}px`,
-  opacity: 0.3 + Math.random() * 0.5,
+  delay: `${Math.random() * 8}s`,
+  duration: `${8 + Math.random() * 10}s`,
+  size: `${10 + Math.random() * 12}px`,
+  opacity: 0.2 + Math.random() * 0.5,
 }));
 
 export function ChristmasEffects() {
-  const [scrollY, setScrollY] = useState(0);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
-    const onScroll = () => setScrollY(window.scrollY);
+    let ticking = false;
+
+    const updateScroll = () => {
+      const windowHeight = window.innerHeight;
+      const fullHeight = document.documentElement.scrollHeight;
+      const maxScroll = Math.max(1, fullHeight - windowHeight);
+      const current = window.scrollY;
+
+      // Progresso de 0.0 a 1.0
+      const progress = Math.min(1, Math.max(0, current / maxScroll));
+      setScrollProgress(progress);
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateScroll);
+        ticking = true;
+      }
+    };
+
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    window.addEventListener('resize', updateScroll, { passive: true });
+    updateScroll();
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', updateScroll);
+    };
   }, []);
 
   return (
@@ -25,13 +52,9 @@ export function ChristmasEffects() {
           0% { transform: translateY(-10vh) rotate(0deg); }
           100% { transform: translateY(110vh) rotate(360deg); }
         }
-        @keyframes santaFloat {
-          0%, 100% { transform: translateY(0px) rotate(-5deg); }
-          50% { transform: translateY(-15px) rotate(5deg); }
-        }
       `}</style>
 
-      {/* Snowflakes */}
+      {/* Flocos de Neve Caindo */}
       <div className="pointer-events-none fixed inset-0 z-40 overflow-hidden" aria-hidden="true">
         {flakes.map((f) => (
           <span
@@ -52,17 +75,39 @@ export function ChristmasEffects() {
         ))}
       </div>
 
-      {/* Santa that moves with scroll */}
+      {/* Corda Vertical na Borda Direita (Tiled Repeat-Y) */}
       <div
-        className="pointer-events-none fixed right-4 z-50 text-5xl sm:text-6xl"
+        className="pointer-events-none fixed z-50 hidden sm:block"
         style={{
-          bottom: `${20 + (scrollY % 200) * 0.3}px`,
-          animation: 'santaFloat 3s ease-in-out infinite',
-          filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.3))',
+          top: 0,
+          bottom: 0,
+          right: '8px',
+          width: '16px',
+          backgroundImage: "url('/icons/Gemini_Generated_Image_8q0wd08q0wd08q0w.jpg')",
+          backgroundRepeat: 'repeat-y',
+          backgroundPosition: 'center top',
+          backgroundSize: '8px auto',
+          opacity: 0.85,
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Papai Noel Descendo/Subindo na Corda conforme Scroll */}
+      <div
+        className="pointer-events-none fixed z-50 hidden sm:block transition-transform duration-75 ease-out"
+        style={{
+          right: '-4px',
+          top: `${15 + scrollProgress * 70}vh`,
+          width: '56px',
+          height: '70px',
         }}
         aria-hidden="true"
       >
-        🎅
+        <img
+          src="/icons/Gemini_Generated_Image_8q0wd08q0wd08q0w (1).jpg"
+          alt="Papai Noel na Corda"
+          className="w-full h-full object-contain filter drop-shadow(0 4px 6px rgba(0,0,0,0.5))"
+        />
       </div>
     </>
   );
