@@ -97,7 +97,7 @@ export interface CategoryInfo {
 }
 
 export const CATEGORIES: CategoryInfo[] = [
-  { id: 'trancas', name: 'Tranças & Nagôs', icon: '/icons/braids.jpg.png', description: 'Tranças nagô, soltas e penteados', color: 'champagne', gradient: 'from-champagne-500 to-champagne-300' },
+  { id: 'trancas', name: 'Tranças & Nagôs', icon: '/icons/braid-hand.svg', description: 'Tranças nagô, soltas e penteados', color: 'champagne', gradient: 'from-champagne-500 to-champagne-300' },
   { id: 'quimica', name: 'Química & Alisamentos', icon: '/icons/Gemini_Generated_Image_jyakp5jyakp5jyak.jpg', description: 'Escovas, progressivas, botox e cortes', color: 'roseGold', gradient: 'from-roseGold-500 to-roseGold-300' },
 ];
 
