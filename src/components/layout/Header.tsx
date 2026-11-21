@@ -8,7 +8,7 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
         {/* Brand Logo */}
         <Link to="/" className="flex items-center gap-4 group" aria-label="Nateliê Hair - Início">
-          <img src="/icons/cabecario-logo.png" alt="Nateliê Hair" className="w-20 h-20 rounded-2xl object-cover shadow-lg shadow-rose-500/30 group-hover:scale-105 transition-transform" />
+          <img src="/icons/cabecario-logo.png" alt="Nateliê Hair" className="w-[135px] h-[135px] rounded-2xl object-cover shadow-lg shadow-rose-500/30 group-hover:scale-105 transition-transform" />
           <div>
             <span className="font-serif font-bold text-2xl text-white tracking-tight block">Nateliê Hair</span>
             <span className="text-sm text-rose-400 font-medium block">Tranças & Química Capilar</span>
