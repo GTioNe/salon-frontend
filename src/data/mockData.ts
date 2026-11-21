@@ -2,27 +2,27 @@ import type { Service, Professional, Client, Appointment, ServiceCategory } from
 
 export const MOCK_SERVICES: Service[] = [
   // Tranças
-  { id: 'nago-solta', name: 'Nagô Solta', description: 'Tranças soltas tradicionais, trabalho completo e detalhado', price: 330, duration: 600, category: 'trancas', popular: true },
-  { id: 'chanel', name: 'Chanel', description: 'Corte Chanel com tranças', price: 250, duration: 300, category: 'trancas', popular: true },
-  { id: 'nago-masc', name: 'Masculino', description: 'Tranças nagô estilo masculino', price: 90, duration: 180, category: 'trancas' },
-  { id: 'nago-fem', name: 'Nagô Feminino', description: 'Tranças nagô estilo feminino', price: 180, duration: 180, category: 'trancas', popular: true },
-  { id: 'nago-rabo', name: 'Nagô Rabo/Coque', description: 'Nagô com finalização em rabo de cavalo ou coque', price: 200, duration: 180, category: 'trancas' },
-  { id: 'nago-tiara', name: 'Nagô Tiara', description: 'Nagô com tiara frontal', price: 65, duration: 240, category: 'trancas' },
-  { id: 'nago-lateral', name: 'Nagô Lateral/Topo', description: 'Nagô lateral ou no topo da cabeça', price: 35, duration: 60, category: 'trancas' },
-  { id: 'nago-lace', name: 'Nagô Lace Básico', description: 'Nagô com finalização lace frontal básica', price: 90, duration: 150, category: 'trancas' },
-  { id: 'nago-simples-rabo', name: 'Nagô Simples + Rabo', description: 'Nagô básico com rabo de cavalo', price: 100, duration: 180, category: 'trancas' },
+  { id: 'nago-solta', name: 'Nagô Solta', description: 'Tranças soltas tradicionais, trabalho completo e detalhado', price: 330, duration: 600, category: 'trancas', popular: true, image: '/icons/Nago solta.png' },
+  { id: 'chanel', name: 'Chanel', description: 'Corte Chanel com tranças', price: 250, duration: 300, category: 'trancas', popular: true, image: '/icons/Chanel Com Tran\u00e7as.png' },
+  { id: 'nago-masc', name: 'Masculino', description: 'Tranças nagô estilo masculino', price: 90, duration: 180, category: 'trancas', image: '/icons/Masculino nago.png' },
+  { id: 'nago-fem', name: 'Nagô Feminino', description: 'Tranças nagô estilo feminino', price: 180, duration: 180, category: 'trancas', popular: true, image: '/icons/Nago Feminino.png' },
+  { id: 'nago-rabo', name: 'Nagô Rabo/Coque', description: 'Nagô com finalização em rabo de cavalo ou coque', price: 200, duration: 180, category: 'trancas', image: '/icons/Nago Rabocoque.png' },
+  { id: 'nago-tiara', name: 'Nagô Tiara', description: 'Nagô com tiara frontal', price: 65, duration: 240, category: 'trancas', image: '/icons/Nago Tiara.png' },
+  { id: 'nago-lateral', name: 'Nagô Lateral/Topo', description: 'Nagô lateral ou no topo da cabeça', price: 35, duration: 60, category: 'trancas', image: '/icons/Lateral Nago.png' },
+  { id: 'nago-lace', name: 'Nagô Lace Básico', description: 'Nagô com finalização lace frontal básica', price: 90, duration: 150, category: 'trancas', image: '/icons/Nago Lace Basico.png' },
+  { id: 'nago-simples-rabo', name: 'Nagô Simples + Rabo', description: 'Nagô básico com rabo de cavalo', price: 100, duration: 180, category: 'trancas', image: '/icons/Nago  Simples + Rabo.png' },
 
   // Química & Alisamentos
-  { id: 'escova-curta', name: 'Escova Curta', description: 'Escova progressiva para cabelos curtos', price: 35, duration: 45, category: 'quimica' },
-  { id: 'escova-media', name: 'Escova Média', description: 'Escova progressiva para cabelos médios', price: 45, duration: 90, category: 'quimica' },
-  { id: 'escova-longa', name: 'Escova', description: 'Escova modelada para cabelos longos e médios', price: 60, duration: 150, category: 'quimica' },
-  { id: 'corte', name: 'Corte', description: 'Corte de cabelo', price: 40, duration: 45, category: 'quimica' },
-  { id: 'corte-escova', name: 'Corte + Escova', description: 'Corte completo com escova', price: 60, duration: 135, category: 'quimica', popular: true },
-  { id: 'botox-natelie', name: 'Botox Nateliê', description: 'Botox capilar com produto profissional da Nateliê', price: 130, duration: 180, category: 'quimica', popular: true },
-  { id: 'progressiva-raiz', name: 'Progressiva Raiz', description: 'Retoque de progressiva na raiz', price: 170, duration: 90, category: 'quimica', popular: true },
-  { id: 'progressiva-global-curto', name: 'Progressiva Global Curto', description: 'Progressiva completa para cabelos curtos', price: 170, duration: 120, category: 'quimica' },
-  { id: 'progressiva-global-longo', name: 'Progressiva Global', description: 'Progressiva completa de alto padrão', price: 170, duration: 240, category: 'quimica', popular: true },
-  { id: 'blindagem', name: 'Blindagem', description: 'Blindagem capilar para proteção e brilho', price: 60, duration: 90, category: 'quimica' },
+{ id: 'escova-curta', name: 'Escova Curta', description: 'Escova progressiva para cabelos curtos', price: 35, duration: 45, category: 'quimica', image: '/icons/Escova Curta.png' },
+  { id: 'escova-media', name: 'Escova Média', description: 'Escova progressiva para cabelos médios', price: 45, duration: 90, category: 'quimica', image: '/icons/escova media.png' },
+  { id: 'escova-longa', name: 'Escova', description: 'Escova modelada para cabelos longos e médios', price: 60, duration: 150, category: 'quimica', image: '/icons/Escova longa.png' },
+  { id: 'corte', name: 'Corte', description: 'Corte de cabelo', price: 40, duration: 45, category: 'quimica', image: '/icons/Corte.png' },
+  { id: 'corte-escova', name: 'Corte + Escova', description: 'Corte completo com escova', price: 60, duration: 135, category: 'quimica', popular: true, image: '/icons/Corte Escova.png' },
+  { id: 'botox-natelie', name: 'Botox Nateliê', description: 'Botox capilar com produto profissional da Nateliê', price: 130, duration: 180, category: 'quimica', popular: true, image: '/icons/Botox Nateliê.png' },
+  { id: 'progressiva-raiz', name: 'Progressiva Raiz', description: 'Retoque de progressiva na raiz', price: 170, duration: 90, category: 'quimica', popular: true, image: '/icons/Progressiva_Raiz.png' },
+  { id: 'progressiva-global-curto', name: 'Progressiva Global Curto', description: 'Progressiva completa para cabelos curtos', price: 170, duration: 120, category: 'quimica', image: '/icons/Progressiva Global.png' },
+  { id: 'progressiva-global-longo', name: 'Progressiva Global', description: 'Progressiva completa de alto padrão', price: 170, duration: 240, category: 'quimica', popular: true, image: '/icons/Progressiva Global.png' },
+  { id: 'blindagem', name: 'Blindagem', description: 'Blindagem capilar para proteção e brilho', price: 60, duration: 90, category: 'quimica', image: '/icons/Blindagem.png' },
 ];
 
 export const MOCK_PROFESSIONALS: Professional[] = [

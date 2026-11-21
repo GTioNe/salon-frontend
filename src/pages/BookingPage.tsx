@@ -447,7 +447,9 @@ function Step1Services({ selectedServices, onSelectServices, onNext }: {
                       ? 'bg-amber-500 text-zinc-900 font-bold'
                       : 'bg-zinc-100 dark:bg-zinc-700 border border-zinc-200 dark:border-zinc-600 text-zinc-400'
                   }`}>
-                    {selectedServices.includes(service.id) ? <Check className="w-5 h-5 text-zinc-900" /> : <span className="text-xl">✂️</span>}
+                    {service.image ? (
+                      <img src={service.image} alt="" className="h-10 w-10 rounded-lg object-contain" />
+                    ) : selectedServices.includes(service.id) ? <Check className="w-5 h-5 text-zinc-900" /> : <span className="text-xl">✂️</span>}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
