@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Scissors, Calendar } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import { Button } from '../ui';
 
 export function Header() {
@@ -8,12 +8,10 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
         {/* Brand Logo */}
         <Link to="/" className="flex items-center gap-3 group" aria-label="Nateliê Hair - Início">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-rose-500 to-pink-500 flex items-center justify-center text-white shadow-lg shadow-rose-500/30 group-hover:scale-105 transition-transform">
-            <Scissors className="w-7 h-7" />
-          </div>
+          <img src="/icons/cabecario-logo.png" alt="Nateliê Hair" className="w-12 h-12 rounded-2xl object-cover shadow-lg shadow-rose-500/30 group-hover:scale-105 transition-transform" />
           <div>
             <span className="font-serif font-bold text-xl text-white tracking-tight block">Nateliê Hair</span>
-            <span className="text-xs text-rose-400 font-medium block">Tranças & Química Capilar ñ é para remover</span>
+            <span className="text-xs text-rose-400 font-medium block">Tranças & Química Capilar</span>
           </div>
         </Link>
 
