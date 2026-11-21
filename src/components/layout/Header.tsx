@@ -5,13 +5,13 @@ import { Button } from '../ui';
 export function Header() {
   return (
     <header className="sticky top-0 z-40 bg-zinc-950/95 backdrop-blur-md border-b border-rose-500/10">
-      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
         {/* Brand Logo */}
-        <Link to="/" className="flex items-center gap-3 group" aria-label="Nateliê Hair - Início">
-          <img src="/icons/cabecario-logo.png" alt="Nateliê Hair" className="w-12 h-12 rounded-2xl object-cover shadow-lg shadow-rose-500/30 group-hover:scale-105 transition-transform" />
+        <Link to="/" className="flex items-center gap-4 group" aria-label="Nateliê Hair - Início">
+          <img src="/icons/cabecario-logo.png" alt="Nateliê Hair" className="w-20 h-20 rounded-2xl object-cover shadow-lg shadow-rose-500/30 group-hover:scale-105 transition-transform" />
           <div>
-            <span className="font-serif font-bold text-xl text-white tracking-tight block">Nateliê Hair</span>
-            <span className="text-xs text-rose-400 font-medium block">Tranças & Química Capilar</span>
+            <span className="font-serif font-bold text-2xl text-white tracking-tight block">Nateliê Hair</span>
+            <span className="text-sm text-rose-400 font-medium block">Tranças & Química Capilar</span>
           </div>
         </Link>
 
