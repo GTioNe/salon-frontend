@@ -111,7 +111,7 @@ export function ChristmasEffects() {
         style={{
           top: 0,
           bottom: 0,
-          right: '20px',
+          right: '0px',
           width: '16px',
           backgroundImage:
             "url('/icons/Gemini_Generated_Image_8q0wd08q0wd08q0w.png')",
@@ -129,7 +129,7 @@ export function ChristmasEffects() {
         className="pointer-events-none fixed z-50 will-change-transform"
         style={{
           top: 0,
-          right: '6px',
+          right: '-14px',
           width: '56px',
           height: '70px',
           transform: 'translate3d(0, 20px, 0)',
