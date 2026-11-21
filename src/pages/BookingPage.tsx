@@ -6,6 +6,7 @@ import { formatCurrency, formatDate, formatDuration } from '../lib/utils';
 import { MOCK_SERVICES } from '../data/mockData';
 import { useSalonStore } from '../store/salonStore';
 import { CATEGORIES, type Service } from '../types';
+import HandBraidingInline from '../components/HandBraidingInline';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
@@ -419,7 +420,7 @@ function Step1Services({ selectedServices, onSelectServices, onNext }: {
         {categoriesWithServices.map((cat) => (
           <div key={cat.id}>
             <h3 className="font-semibold text-zinc-900 dark:text-white mb-4 flex items-center gap-2 text-lg">
-              {cat.icon.startsWith('/') ? <img src={cat.icon} alt="" className="h-16 w-16 rounded-lg object-contain" /> : <span className="text-2xl">{cat.icon}</span>}
+              {cat.id === 'trancas' ? <HandBraidingInline width={44} height={58} /> : (cat.icon.startsWith('/') ? <img src={cat.icon} alt="" className="h-16 w-16 rounded-lg object-contain" /> : <span className="text-2xl">{cat.icon}</span>)}
               {cat.name}
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
