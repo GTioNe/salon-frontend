@@ -13,7 +13,7 @@ export function Header() {
           </div>
           <div>
             <span className="font-serif font-bold text-xl text-white tracking-tight block">Nateliê Hair</span>
-            <span className="text-xs text-rose-400 font-medium block">Tranças & Química Capilar</span>
+            <span className="text-xs text-rose-400 font-medium block">Tranças & Química Capilar ñ é para remover</span>
           </div>
         </Link>
 
