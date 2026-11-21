@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { DollarSign, TrendingUp, TrendingDown, Plus, Download } from 'lucide-react';
 import { Card, Button, Input, Badge } from '../../components/ui';
 import { formatCurrency, formatDate } from '../../lib/utils';
@@ -15,17 +15,26 @@ interface Transaction {
 }
 
 export function AdminFinancial() {
-  const [transactions, setTransactions] = useState<Transaction[]>([
-    // Exemplo de transações
-    { id: '1', type: 'income', category: 'Serviço', description: 'Nagô Feminino', amount: 180, date: '2026-11-08', paymentMethod: 'Pix' },
-    { id: '2', type: 'expense', category: 'Produto', description: 'Shampoo profissional', amount: 45, date: '2026-11-07' },
-    { id: '3', type: 'income', category: 'Serviço', description: 'Escova Longa', amount: 60, date: '2026-11-07', paymentMethod: 'Dinheiro' },
-    { id: '4', type: 'expense', category: 'Aluguel', description: 'Aluguel do espaço', amount: 500, date: '2026-11-05' },
-  ]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const res = await fetch('/api/admin/financials');
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setTransactions(data);
+        }
+      } catch (err) {
+        console.error('Erro ao carregar financeiros:', err);
+      }
+    }
+    load();
+  }, []);
   
   const [showModal, setShowModal] = useState(false);
   const [filterType, setFilterType] = useState<'all' | 'income' | 'expense'>('all');
-  const [filterMonth, setFilterMonth] = useState(new Date().toISOString().slice(0, 7)); // yyyy-mm
+  const [filterMonth, setFilterMonth] = useState(new Date().toISOString().slice(0, 7));
   
   const [newTransaction, setNewTransaction] = useState<Partial<Transaction>>({
     type: 'income',
@@ -39,19 +48,19 @@ export function AdminFinancial() {
   const filteredTransactions = useMemo(() => {
     return transactions.filter(t => {
       const matchType = filterType === 'all' || t.type === filterType;
-      const matchMonth = t.date.startsWith(filterMonth);
+      const matchMonth = String(t.date).startsWith(filterMonth);
       return matchType && matchMonth;
     });
   }, [transactions, filterType, filterMonth]);
 
   const totals = useMemo(() => {
-    const income = filteredTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
-    const expense = filteredTransactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+    const income = filteredTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+    const expense = filteredTransactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
     const balance = income - expense;
     return { income, expense, balance };
   }, [filteredTransactions]);
 
-  const handleAddTransaction = () => {
+  const handleAddTransaction = async () => {
     if (!newTransaction.category || !newTransaction.description || !newTransaction.amount) {
       alert('Preencha todos os campos obrigatórios');
       return;
@@ -61,11 +70,24 @@ export function AdminFinancial() {
       type: newTransaction.type as 'income' | 'expense',
       category: newTransaction.category!,
       description: newTransaction.description!,
-      amount: newTransaction.amount!,
+      amount: Number(newTransaction.amount)!,
       date: newTransaction.date!,
       paymentMethod: newTransaction.paymentMethod,
     };
-    setTransactions([transaction, ...transactions]);
+    try {
+      const res = await fetch('/api/admin/financials', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(transaction),
+      });
+      if (res.ok) {
+        setTransactions([transaction, ...transactions]);
+      }
+    } catch (err) {
+      console.error('Erro ao salvar:', err);
+      alert('Erro ao salvar transação');
+      return;
+    }
     setShowModal(false);
     setNewTransaction({
       type: 'income',
@@ -84,7 +106,6 @@ export function AdminFinancial() {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -106,7 +127,6 @@ export function AdminFinancial() {
         </div>
       </motion.div>
 
-      {/* Metrics Cards */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -152,7 +172,6 @@ export function AdminFinancial() {
         </Card>
       </motion.div>
 
-      {/* Filters */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -193,7 +212,6 @@ export function AdminFinancial() {
         />
       </motion.div>
 
-      {/* Transactions List */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -256,7 +274,6 @@ export function AdminFinancial() {
         </Card>
       </motion.div>
 
-      {/* Modal */}
       {showModal && (
         <motion.div
           initial={{ opacity: 0 }}
