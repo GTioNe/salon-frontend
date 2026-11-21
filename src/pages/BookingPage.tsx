@@ -423,7 +423,7 @@ function Step1Services({ selectedServices, onSelectServices, onNext }: {
                 <img 
                   src={cat.icon} 
                   alt="" 
-                  className={`${cat.id === 'trancas' ? 'h-[190px] w-[190px]' : 'h-[165px] w-[165px]'} shrink-0 rounded-lg object-contain`} 
+                  className={`${cat.id === 'trancas' ? 'h-[215px] w-[215px]' : 'h-[165px] w-[165px]'} shrink-0 rounded-lg object-contain`} 
                   /* ponytail: Quimica icon size frozen at 80px per user authorization only */
                 />
               ) : (
