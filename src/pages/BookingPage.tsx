@@ -424,7 +424,7 @@ function Step1Services({ selectedServices, onSelectServices, onNext }: {
                   src={cat.icon} 
                   alt="" 
                   className={`${cat.id === 'trancas' ? 'h-[215px] w-[215px]' : 'h-[165px] w-[165px]'} shrink-0 rounded-lg object-contain`} 
-                  /* ponytail: Quimica icon size frozen at 80px per user authorization only */
+                  /* ponytail: both category icon sizes are approved and frozen; change only with user authorization */
                 />
               ) : (
                 <span className="text-2xl">{cat.icon}</span>
