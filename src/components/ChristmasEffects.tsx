@@ -57,7 +57,7 @@ export function ChristmasEffects() {
         legRightRef.current.style.transform = `translateY(${swing * 5}px) rotate(${swing * 15}deg)`;
       }
       if (santaRef.current) {
-        santaRef.current.style.transform = `translate3d(-50%, ${currentY}px, 0) rotate(${bodyTilt}deg)`;
+        santaRef.current.style.transform = `translate3d(0, ${currentY}px, 0) rotate(${bodyTilt}deg)`;
       }
 
       raf = requestAnimationFrame(loop);
@@ -111,7 +111,7 @@ export function ChristmasEffects() {
         style={{
           top: 0,
           bottom: 0,
-          right: '6px',
+          right: '20px',
           width: '16px',
           backgroundImage:
             "url('/icons/Gemini_Generated_Image_8q0wd08q0wd08q0w.png')",
@@ -132,7 +132,7 @@ export function ChristmasEffects() {
           right: '6px',
           width: '56px',
           height: '70px',
-          transform: 'translate3d(-50%, 20px, 0)',
+          transform: 'translate3d(0, 20px, 0)',
           filter: 'drop-shadow(0 6px 8px rgba(0,0,0,0.5))',
         }}
         aria-hidden="true"
