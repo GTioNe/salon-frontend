@@ -110,7 +110,7 @@ export default function HandBraidingInline({
           {/* Base interna escura para dar profundidade */}
           <path
             d="M38 36 L38 108"
-            stroke="#4c1d95"
+            stroke="#1c1917"
             strokeWidth="12"
             strokeLinecap="round"
           />
