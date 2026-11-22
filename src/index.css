@@ -1,7 +1,22 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Epilogue:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&family=Epilogue:wght@300;400;500;600;700&display=swap');
 
+/* Stripe design tokens (design/stripe.md) */
 @theme {
+  --color-stripe-primary: #533afd;
+  --color-stripe-primary-deep: #4434d4;
+  --color-stripe-primary-press: #2e2b8c;
+  --color-stripe-brand-dark: #1c1e54;
+  --color-stripe-ink: #0d253d;
+  --color-stripe-ink-secondary: #273951;
+  --color-stripe-ink-mute: #64748d;
+  --color-stripe-canvas: #ffffff;
+  --color-stripe-canvas-soft: #f6f9fc;
+  --color-stripe-canvas-cream: #f5e9d4;
+  --color-stripe-hairline: #e3e8ee;
+  --color-stripe-ruby: #ea2261;
+  --color-stripe-magenta: #f96bee;
+
   --color-pink-50: #fff1f2;
   --color-pink-100: #ffe4e6;
   --color-pink-200: #fecdd3;
@@ -12,6 +27,7 @@
 
   --font-family-sans: 'Epilogue', system-ui, sans-serif;
   --font-family-display: 'Playfair Display', system-ui, serif;
+  --font-family-stripe: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 @layer base {
@@ -27,6 +43,7 @@
     background-color: #18181b;
     color: #f4f4f5;
     font-family: 'Epilogue', system-ui, sans-serif;
+    font-feature-settings: "ss01", "tnum" 0;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -68,6 +85,17 @@
 @layer utilities {
   .font-playfair {
     font-family: 'Playfair Display', Georgia, serif;
+  }
+
+  .font-stripe {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-feature-settings: "ss01", "tnum";
+    letter-spacing: -0.02em;
+  }
+
+  .tabular-nums {
+    font-feature-settings: "tnum";
+    letter-spacing: -0.01em;
   }
 
   .glass-card {
