@@ -1,6 +1,17 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { Service, Professional, Client, Appointment, AppointmentStatus } from '../types';
+
+export interface Transaction {
+  id: string;
+  type: 'income' | 'expense';
+  category: string;
+  description: string;
+  amount: number;
+  date: string;
+  paymentMethod?: string;
+  status?: 'pending' | 'confirmed';
+}
 import { MOCK_SERVICES, MOCK_PROFESSIONALS, MOCK_CLIENTS, MOCK_APPOINTMENTS } from '../data/mockData';
 
 const getApiBase = () => {
@@ -27,6 +38,7 @@ interface SalonState {
   professionals: Professional[];
   clients: Client[];
   appointments: Appointment[];
+  financials: Transaction[];
   
   // UI State
   isDarkMode: boolean;
@@ -55,6 +67,10 @@ interface SalonState {
   getAppointmentsByDate: (date: string) => Appointment[];
   getAppointmentsByProfessional: (professionalId: string, date: string) => Appointment[];
   getAvailableSlots: (date: string, professionalId?: string, duration?: number, serviceId?: string) => Promise<string[]>;
+
+  // Actions - Financials
+  addFinancial: (transaction: Transaction) => void;
+  updateFinancialStatus: (id: string, status: 'pending' | 'confirmed') => void;
   
   // UI Actions
   toggleDarkMode: () => void;
@@ -86,6 +102,7 @@ export const useSalonStore = create<SalonState>()(
       professionals: MOCK_PROFESSIONALS,
       clients: MOCK_CLIENTS,
       appointments: MOCK_APPOINTMENTS,
+      financials: [],
       
       // UI State
       isDarkMode: false,
@@ -230,6 +247,17 @@ export const useSalonStore = create<SalonState>()(
           return [];
         }
       },
+
+      // Financials
+      addFinancial: (transaction) => {
+        set((state) => ({ financials: [transaction, ...state.financials] }));
+      },
+
+      updateFinancialStatus: (id, status) => {
+        set((state) => ({
+          financials: state.financials.map((f) => (f.id === id ? { ...f, status } : f)),
+        }));
+      },
       
       // UI Actions
       toggleDarkMode: () => {
@@ -276,6 +304,7 @@ export const useSalonStore = create<SalonState>()(
         professionals: state.professionals,
         clients: state.clients,
         appointments: state.appointments,
+        financials: state.financials,
         isDarkMode: state.isDarkMode,
       }),
     }

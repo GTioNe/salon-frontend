@@ -1,19 +1,34 @@
 import { motion } from 'framer-motion';
-import { Plus, Edit, Trash2, Search } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, X } from 'lucide-react';
 import { useState } from 'react';
 import { Button, Input, Badge } from '../../components/ui';
 import { formatCurrency, formatDuration } from '../../lib/utils';
 import { useSalonStore } from '../../store/salonStore';
-import { CATEGORIES } from '../../types';
+import { CATEGORIES, type Service } from '../../types';
 
 export function AdminServices() {
+  const { services, addService, updateService, deleteService } = useSalonStore();
   const [searchQuery, setSearchQuery] = useState('');
-  const { services } = useSalonStore();
+  const [showModal, setShowModal] = useState(false);
+  const [editing, setEditing] = useState<Service | null>(null);
+  const [form, setForm] = useState({
+    name: '', description: '', price: '', duration: '', category: 'trancas' as Service['category'], popular: false,
+  });
 
   const filteredServices = services.filter(s =>
     s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     s.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const openNew = () => { setEditing(null); setForm({ name: '', description: '', price: '', duration: '', category: 'trancas', popular: false }); setShowModal(true); };
+  const openEdit = (s: Service) => { setEditing(s); setForm({ name: s.name, description: s.description, price: String(s.price), duration: String(s.duration), category: s.category, popular: !!s.popular }); setShowModal(true); };
+  const handleSave = () => {
+    if (!form.name.trim() || !form.price || !form.duration) return;
+    const data = { name: form.name, description: form.description, price: Number(form.price), duration: Number(form.duration), category: form.category, popular: form.popular };
+    if (editing) updateService(editing.id, data);
+    else addService(data);
+    setShowModal(false);
+  };
 
   return (
     <div className="space-y-6">
@@ -26,7 +41,7 @@ export function AdminServices() {
           <h1 className="font-display font-bold text-3xl gradient-text">Gerenciar Serviços</h1>
           <p className="text-zinc-400 mt-1">{services.length} serviços cadastrados</p>
         </div>
-        <Button><Plus className="w-4 h-4 mr-2" />Novo Serviço</Button>
+        <Button onClick={openNew}><Plus className="w-4 h-4 mr-2" />Novo Serviço</Button>
       </motion.div>
 
       <motion.div
@@ -76,13 +91,44 @@ export function AdminServices() {
                 </div>
               </div>
               <div className="flex gap-2">
-                <Button variant="ghost" size="sm"><Edit className="w-4 h-4" /></Button>
-                <Button variant="ghost" size="sm"><Trash2 className="w-4 h-4 text-rose-400" /></Button>
+                <Button variant="ghost" size="sm" onClick={() => openEdit(service)}><Edit className="w-4 h-4" /></Button>
+                <Button variant="ghost" size="sm" onClick={() => { if (confirm('Excluir este serviço?')) deleteService(service.id); }}><Trash2 className="w-4 h-4 text-rose-400" /></Button>
               </div>
             </motion.div>
           );
         })}
       </motion.div>
+
+      {showModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowModal(false)}>
+          <div className="bg-[#1c1e54] border border-white/10 rounded-2xl p-6 max-w-md w-full space-y-4" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-white">{editing ? 'Editar Serviço' : 'Novo Serviço'}</h3>
+              <button onClick={() => setShowModal(false)} className="text-zinc-400 hover:text-white"><X className="w-5 h-5" /></button>
+            </div>
+            <Input label="Nome" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+            <Input label="Descrição" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+            <div className="grid grid-cols-2 gap-3">
+              <Input label="Preço (R$)" type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} />
+              <Input label="Duração (min)" type="number" value={form.duration} onChange={(e) => setForm({ ...form, duration: e.target.value })} />
+            </div>
+            <div>
+              <label className="block text-sm text-zinc-300 mb-1.5">Categoria</label>
+              <select className="w-full bg-zinc-800 border border-zinc-700 text-white rounded-xl px-4 py-3" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value as Service['category'] })}>
+                {CATEGORIES.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+              </select>
+            </div>
+            <label className="flex items-center gap-2 text-sm text-zinc-300">
+              <input type="checkbox" checked={form.popular} onChange={(e) => setForm({ ...form, popular: e.target.checked })} />
+              Serviço popular
+            </label>
+            <div className="flex gap-3 pt-2">
+              <Button variant="secondary" className="flex-1" onClick={() => setShowModal(false)}>Cancelar</Button>
+              <Button className="flex-1" onClick={handleSave}>Salvar</Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

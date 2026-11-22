@@ -9,6 +9,7 @@ import { AdminFinancial } from './pages/admin/AdminFinancial';
 import { AdminClients } from './pages/admin/AdminClients';
 import { AdminServices } from './pages/admin/AdminServices';
 import { AdminSettings } from './pages/admin/AdminSettings';
+import { ProfileSettings } from './pages/ProfileSettings';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/agendar" element={<BookingPage />} />
           <Route path="/servicos" element={<ServicesPage />} />
+          <Route path="/perfil" element={<ProfileSettings />} />
         </Route>
 
         {/* Admin routes with AdminLayout */}
