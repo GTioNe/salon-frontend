@@ -9,9 +9,9 @@ Protótipo inicial desenvolvido para o **Nateliê Hair**, criado como base de te
 ## 💡 Proposta e Arquitetura Híbrida
 
 Este repositório representa uma versão inicial/experimental com foco em baixo custo operacional:
-* **Modelo gratuito e híbrido:** Combina hospedagem gratuita no frontend (Vercel), banco local leve (SQLite) e serviços gratuitos/acessíveis para agenda e mensagens.
-* **Foco em pequenos negócios:** Ideal para profissionais autônomos e estúdios que precisam organizar horários e cobranças/regras sem depender de sistemas pagos pesados.
-
+* **Modelo gratuito e híbrido:** Combina frontend hospedado gratuitamente na web, banco de dados local leve (SQLite) e integrações gratuitas/acessíveis.
+* **Túnel para testes / operação local:** Como o backend roda localmente (junto ao banco SQLite e à sessão do bot), um túnel como o **ngrok** é utilizado para expor a API local de forma temporária e permitir que o frontend publicado se comunique com ela durante os testes.
+* **Foco em pequenos negócios:** Ideal para profissionais autônomos e estúdios que precisam organizar horários e regras de atendimento sem depender de sistemas pagos pesados.
 ---
 
 ## 🚀 Principais Funcionalidades
