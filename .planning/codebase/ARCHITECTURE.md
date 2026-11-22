@@ -1,186 +1,111 @@
-# Architecture
+# ARCHITECTURE.md — System Design and Patterns
 
-**Analysis Date:** 2026-11-22
+**Generated:** 2026-11-22
 
-## System Overview
+## System Architecture
 
-```text
-┌─────────────────────────────────────────────────────────────┐
-│                    Frontend SPA (React)                     │
-│  ┌─────────────────┐  ┌─────────────────────────────────┐ │
-│  │  Public Routes  │  │        Admin Routes               │ │
-│  │  (MainLayout)   │  │  (AdminLayout)                    │ │
-│  │  └── /          │  │  └── /admin                       │ │
-│  │  └── /agendar   │  │  └── /admin/agenda                │ │
-│  │  └── /servicos  │  │  └── /admin/financeiro            │ │
-│  │  └── /perfil    │  │  └── /admin/clientes              │ │
-│  └─────────────────┘  │  └── /admin/servicos              │ │
-                       │  └── /admin/ajustes              │ │
-                       └───────────────┬───────────────────┘
-                                     │
-                                     ▼
-┌─────────────────────────────────────────────────────────────┐
-│                     Zustand Global State                      │
-│  (`src/store/salonStore.ts`)                                  │
-│  State: services, professionals, clients, appointments        │
-│  UI: isDarkMode, sidebarOpen                                 │
-│  Actions: CRUD + computed metrics                            │
-└─────────────────────────────────────────────────────────────┘
-                                     │
-                                     ▼
-┌─────────────────────────────────────────────────────────────┐
-│                      API Layer (`src/api/natelieApi.ts`)      │
-│  Base URL: VITE_API_URL env var || http://localhost:3001/api │
-│  Fetch wrapper with ngrok-skip-browser-warning header        │
-└─────────────────────────────────────────────────────────────┘
-```
+### Layers
 
-## Component Responsibilities
+1. **Presentation Layer** (React + Vite)
+   - Components: `src/components/`
+   - Pages: `src/pages/`
+   - Routing: React Router v6 (`src/pages/admin`, `src/pages/profile`)
 
-| Component | Responsibility | File |
-|-----------|----------------|------|
-| **App** | Root router with BrowserRouter, Routes, public vs admin branch | `src/App.tsx` |
-| **MainLayout** | Header, Footer, motion-animated section container with Outlet for public routes | `src/components/layout/MainLayout.tsx` |
-| **AdminLayout** | Sidebar nav, top header, main content area with Outlet for admin routes | `src/components/layout/AdminLayout.tsx` |
-| **AdminDashboard** | KPI strip (revenue, appointments, new clients) + quick-action buttons | `src/pages/admin/AdminDashboard.tsx` |
-| **Zion Salon Store** | Global Zustand state with localStorage persistence, API base URL, all CRUD actions | `src/store/salonStore.ts` |
-| **API Client** | fetch wrapper for all backend calls (`/api/services`, `/api/slots`, `/api/reserve`, etc.) | `src/api/natelieApi.ts` |
-| **useAppointments / useServices / useProfessionals / useClients** | React hooks that read from + sync with Zustand store | `src/hooks/useSalon.ts` |
-| **UI Kit** | Button, Card, Input, Modal, Select, Avatars, etc. shared across layouts | `src/components/ui/` |
-| **Type Layer** | TypeScript interfaces: Service, Professional, Client, Appointment, Status enums | `src/types/index.ts` |
+2. **State Management Layer**
+   - Zustand Store: `src/store/salonStore.ts` — Central state for appointments, user profile, etc.
+   - Local Storage: Used for temporary data (e.g., form state).
 
-## Pattern Overview
+3. **Data Layer**
+   - API Client: `src/api/natelieApi.ts` — Service layer for HTTP requests.
+   - Backend: External Node.js server (`localhost:3001` or ngrok URL) with SQLite database.
 
-**Overall:** SPA with layered architecture — Presentation → Routing → State Management → API → Mock/Data
+4. **UI Layer**
+   - Components: Reusable UI elements (`src/components/ui/`) — Buttons, Inputs, Cards, Modals.
+   - Layouts: `src/components/layout/` — `AdminLayout`, `MainLayout`.
 
-**Key Characteristics:**
-- React 19 + React Router 7 + Vite 5
-- Zustand 5 for global state (with persist middleware to localStorage)
-- Unified layout pattern: MainLayout for public, AdminLayout for admin area
-- All admin navigation flows through AdminLayout sidebar + Outlet
-- API base URL is configured once in store and shared across fetch calls
-- Type-safe data layer with shared `src/types/index.ts`
+5. **Assets Layer**
+   - Images: `src/assets/` — Hero images, icons.
+   - SVGs: `src/assets/react.svg`, `vite.svg`.
 
-## Layers
+### Data Flow
 
-**[Presentation Layer]:**
-- Purpose: UI rendering, layout, navigation
-- Location: `src/components/layout/`, `src/pages/`, `src/components/ui/`
-- Contains: MainLayout, AdminLayout, all page components, UI widgets
-- Depends on: React Router, Zustand, Lucide icons, Tailwind CSS
-- Used by: App router, user navigation
+1. **User Interaction** → React Component → State Update (Zustand) → Re-render
+2. **API Call** → `salonStore.ts` → `natelieApi.ts` → HTTP Request → Backend (Node.js + SQLite)
+3. **Response** → State Update → UI Update
 
-**[State Management Layer]:**
-- Purpose: Global state, persistence, API base URL, computed metrics
-- Location: `src/store/salonStore.ts`
-- Contains: SalonState interface, create store with persist middleware, all actions and getters
-- Depends on: zustand, zustand/middleware, types
-- Used by: useSalon hooks, page components via `useSalonStore()`
+### Key Files and Locations
 
-**[API Layer]:**
-- Purpose: Remote communication with backend, request formatting
-- Location: `src/api/natelieApi.ts`
-- Contains: fetch wrapper, API base resolution, all endpoint functions (services, slots, reserve, confirm, cancel)
-- Depends on: env vars (VITE_API_URL), fetch API
-- Used by: useSalonStore getAvailableSlots, could be used by any component
+- **Main Entry**: `src/main.tsx` — ReactDOM.render()
+- **Routing**: `src/pages/` — Each page is a React component with its own route
+- **Admin Area**: `src/pages/admin/` — Separate layout (`AdminLayout`) for administrative features
+- **Public Area**: `src/pages/` — Standard layout (`MainLayout`) for customer-facing features
+- **API Layer**: `src/api/` — Service layer for HTTP requests
+- **State**: `src/store/` — Zustand store for application state
+- **UI Components**: `src/components/` — Reusable components (Button, Input, Card, etc.)
+- **Layouts**: `src/components/layout/` — Page-specific layouts (AdminLayout, MainLayout)
 
-**[Routing Layer]:**
-- Purpose: SPA routing, layout switching, route guarding
-- Location: `src/App.tsx`
-- Contains: BrowserRouter, Routes, public routes (MainLayout), admin routes (AdminLayout), Navigate fallback
-- Depends on: react-router-dom
-- Used by: All page components
+## Key Patterns
 
-## Data Flow
+### 1. Layout Pattern
 
-### Primary Request Path
+- **Two Layouts**:
+  - `MainLayout`: Public area (Home, Services, Profile)
+  - `AdminLayout`: Administrative area (Dashboard, Financials, Clients)
 
-1. **App** renders `<BrowserRouter>` → `<Routes>` (`src/App.tsx:1-39`)
-2. Route match determines layout:
-   - Public routes → `<MainLayout />` with nested routes (`src/App.tsx:19-24`)
-   - Admin routes → `<AdminLayout />` with nested routes (`src/App.tsx:27-36`)
-3. **Layout renders Outlet** (`src/components/layout/MainLayout.tsx:133` / `AdminLayout.tsx:133`)
-4. Nested page component mounts
-5. Page hooks use `useSalonStore()` to read/store data (`src/hooks/useSalon.ts`)
-6. Store actions dispatch Zustand state changes, possibly calling `fetchApi()` (`src/store/salonStore.ts:12-22`)
-7. `fetchApi()` resolves base URL from `import.meta.env.VITE_API_URL` or default, fetches from `${baseUrl}/api...` (`src/api/natelieApi.ts`)
+- **Navigation**: 
+  - Top navigation bar with search and profile options.
+  - Sidebar menu for admin area (Agenda, Financeiro, Clientes, Serviços, Ajustes).
 
-### [Secondary Flow: Slot Lookup]
+### 2. State Management
 
-1. Component calls `useAvailableSlots(date, profId, duration)` (`src/hooks/useSalon.ts:91-114`)
-2. Hook reads `getAvailableSlots` from store (`src/store/salonStore.ts:217-232`)
-3. `getAvailableSlots` calls `fetchApi<string[]>(/api/slots/...)` (`src/store/salonStore.ts:225`)
-4. `fetchApi` resolves base URL, constructs endpoint, performs fetch (`src/store/salonStore.ts:12-22`)
+- **Zustand Store**: `salonStore.ts` manages:
+  - User profile data
+  - Appointment state
+  - API response state
+  - Local form state
 
-### State Management:
+### 3. API Pattern
 
-- Global state stored in Zustand store with localStorage persistence
-- Partialize saves: services, professionals, clients, appointments, isDarkMode, sidebarOpen
-- Computed `getDashboardMetrics` derives revenue, appointment counts, occupancy rate from store state
-- UI toggles (dark mode, sidebar) use simple setState patterns
+- **Service Layer**: `natelieApi.ts` abstracts HTTP calls.
+- **Error Handling**: Inline validation with `error` state in components (no `alert()`).
 
-## Key Abstractions
+### 4. Component Structure
 
-**[SalonState]:**
-- Purpose: Centralized global state for all salon data and UI flags
-- Examples: `src/store/salonStore.ts` (full state interface + store creation)
-- Pattern: Zustand `create()` with `persist` middleware + `partialize`
+- **Atomic Components**: Small, reusable components (e.g., `Button`, `Input`, `Card`).
+- **Page-Specific Components**: `AdminDashboard`, `AdminFinancial`, `ProfileSettings`.
 
-**[fetchApi]:**
-- Purpose: Unified fetch wrapper with API base URL injection
-- Examples: `src/store/salonStore.ts:12-22`, `src/api/natelieApi.ts`
-- Pattern: Higher-order function that prepends base URL, adds ngrok skip header
+### 5. Type System
 
-## Entry Points
+- **TypeScript**: Used throughout for type safety.
+- **Type Definitions**: `src/types/index.ts` — Centralized types for data models.
 
-**[App]:**
-- Location: `src/App.tsx`
-- Triggers: App initialization, root route render
-- Responsibilities: Sets up React Router, defines public vs admin route branches, selects layout per branch
+## File Organization
 
-## Architectural Constraints
+- **src/components/layout/**: Page-specific layouts (AdminLayout, MainLayout)
+- **src/components/ui/**: Reusable UI components
+- **src/pages/**: Route components (Home, Admin, Profile)
+- **src/pages/admin/**: Administrative pages with dedicated layout
+- **src/store/**: Zustand store implementation
+- **src/api/**: API service layer
+- **src/data/**: Mock data for development
 
-- **Threading:** Single-threaded JavaScript event loop (standard React/Vite development)
-- **Global state:** Zustand store with persist middleware using localStorage — data survives page reload
-- **Circular imports:** None detected; `src/store/salonStore.ts` imports types but not UI; hooks import store and types — no cycles
-- **[Other constraint]:** API base URL derived from `VITE_API_URL` env var with fallback to `http://localhost:3001` — must match backend base path
+## Critical Paths
 
-## Anti-Patterns
+1. **Admin Dashboard** → `AdminLayout` → `AdminDashboard.tsx` → Zustand store → API calls
+2. **Financial Operations** → `AdminFinancial.tsx` → `POST /api/admin/financials` → Backend validation
+3. **Profile Management** → `ProfileSettings.tsx` → `/perfil` route → Zustand store
 
-### [Over-fetching in useSalonStore]
+## Dependencies
 
-**What happens:** The `SalonState` interface includes all appointment/service/professional/client arrays plus UI flags in a single store. While convenient, any component importing `useSalonStore` triggers a subscription re-render for *all* state changes, even unrelated ones (e.g., toggling dark mode causes all components subscribed to services to re-render).
+- **Zustand**: Central state management
+- **React Router**: Client-side routing
+- **Framer Motion**: Animation support
+- **Date-fns**: Date manipulation
 
-**Why it's wrong:** Can cause unnecessary re-renders across the app as state grows.
+## Potential Issues
 
-**Do this instead:** Split store into domain-specific stores (e.g., separate services store, appointments store) or use selectors more granularly. Currently acceptable for app scale, but worth monitoring.
+- **Public Admin Routes**: `/admin` is currently accessible without authentication.
+- **Backend Reliability**: ngrok tunnel may expire; local dev server (`localhost:3001`) must be running.
+- **Data Persistence**: Frontend currently uses local state; backend must persist financial transactions.
 
-### [Hardcoded default API URL]
-
-**What happens:** `getApiBase()` in `src/store/salonStore.ts:6-10` defaults to `http://localhost:3001` when `VITE_API_URL` is not set. If deployed without the env var, all API calls fail silently (caught and re-thrown as generic errors).
-
-**Why it's wrong:** Production deployment requires the env var; there's no graceful degradation path.
-
-**Do this instead:** Ensure `VITE_API_URL` is always set in production, or add a runtime warning/fallback to a known staging endpoint.
-
-## Error Handling
-
-**Strategy:** Errors from `fetchApi()` are thrown as `Error` objects with status/message. Individual endpoints (`fetchServices`, `reserveAppointment`, etc.) catch and re-throw with domain-specific messages. UI components catch these with try/catch and display error states (not shown in current code, but pattern is established).
-
-**Patterns:**
-- `try { const data = await fetchApi(...) } catch (e) { setError((e as Error).message) }`
-- `useAvailableSlots` catches fetch errors and returns `[]` instead of propagating (graceful degradation for non-critical data)
-
-## Cross-Cutting Concerns
-
-**Logging:** `console.error` used in `useSalonStore.getAvailableSlots` (line 228) and `fetchApi` (line 20) for API failures. No centralized logging service configured.
-
-**Validation:** Manual validation via regex (`validateCPF`, `validatePhone`, `validateEmail` in `src/lib/utils.ts`) and form-level checks. No centralized Zod/yup validation schema observed.
-
-**Authentication:** Not implemented in current codebase. Admin layout assumes authenticated user; no auth guard or token management visible. Route protection relies on AdminLayout being server-side or handled externally.
-
-**Environment:** `VITE_API_URL` env var required for production API calls. Defined in `.env*` files (not present in repo; likely at build/deploy time).
-
----
-
-*Architecture analysis: 2026-11-22*
+**Note**: This architecture is designed for a single-page application (SPA) with client-side routing and state management. The backend is separate and must be running for API calls to work.

@@ -1,71 +1,35 @@
-# External Integrations
+# INTEGRATIONS.md — External Services and APIs
 
-**Analysis Date:** 2026-11-22
+**Generated:** 2026-11-22
 
-## APIs & External Services
+## Backend API
 
-**Salon Backend REST API:**
-- Custom Express backend (`server.js`, not committed to this frontend repo) - Salon operations API
-  - Service catalog consumption: `GET /api/services`
-  - Availability computation: `GET /api/slots?date=...&serviceId=...`
-  - Booking persistence: `POST /api/reserve`
-  - Booking confirmation flow: `POST /api/confirm`
-  - Booking cancellation: `POST /api/cancel`
-  - Admin financial data: `GET /api/admin/financials`, `POST /api/admin/financials`
-  - Admin reservations: `GET /api/admin/reservations`, `GET /api/admin/stats`
-- Base URL resolution: `VITE_API_URL` env var (fallback `http://localhost:3001`)
-- Custom headers sent with all API calls:
-  - `Content-Type: application/json`
-  - `ngrok-skip-browser-warning: ''` (required by ngrok browser warning bypass)
+- **Primary**: `http://localhost:3001` (Local development)
+- **Production**: `https://cocoa-oblivion-throng.ngrok-free.dev` (Via Vercel env var `VITE_API_URL`)
+- **Endpoints Used**:
+    - `GET /api/admin/financials` (Read)
+    - `POST /api/admin/financials` (Write/Transaction)
+- **Backend State**: The backend itself (`server.js`) is *not* present in this frontend directory; it's an external process.
 
-## Data Storage
+## Data Persistence
 
-**Databases:**
-- SQLite - Local file-based database (`server.js`) for salon appointments, financial records, and operational data
+- **Database**: SQLite (implied by backend logic, not directly accessed by frontend)
+- **State Management**: Zustand (`src/store/salonStore.ts`) holds *local* state/API responses.
 
-**File Storage:**
-- Local filesystem / static assets - Served via Vercel static hosting (`dist/`)
+## Authentication & Security
 
-**Caching:**
-- None
+- **Current State**: No authentication implemented on frontend routes (e.g., `/admin` is public).
+- **Security Note**: Sensitive operations (password change, session management) currently use local state placeholders only; no real API endpoints confirmed for persistence.
+- **Tokens**: No JWTs or session tokens confirmed in frontend code.
 
-## Authentication & Identity
+## Messaging
 
-**Auth Provider:**
-- None implemented - No authentication layer exists for admin routes; `/admin` routes are publicly accessible by design per `HANDOFF.md`
+- **Service**: WhatsApp (for confirmations, reminders, cancellation)
+- **Mechanism**: Handled via specific message syntax (`cancelar CODIGO`) in service responses/logic.
 
-## Monitoring & Observability
+## Deployment
 
-**Error Tracking:**
-- Not configured
+- **Frontend Host**: Vercel (`https://salon-frontend-opal.vercel.app`)
+- **Build Process**: `npm run build` creates the production asset bundle (SPA).
 
-**Logs:**
-- Not configured
-
-## CI/CD & Deployment
-
-**Hosting:**
-- Vercel - Frontend hosting at `https://salon-frontend-opal.vercel.app` (SPA config via `vercel.json` with catch-all rewrite to `/index.html`)
-
-**CI Pipeline:**
-- Not configured
-
-## Environment Configuration
-
-**Required env vars:**
-- `VITE_API_URL` - Backend API base URL (e.g., `https://cocoa-oblivion-throng.ngrok-free.dev` in current testing setup)
-
-**Secrets location:**
-- Not committed to repo (no secrets committed)
-
-## Webhooks & Callbacks
-
-**Incoming:**
-- Not configured (no public webhook endpoints)
-
-**Outgoing:**
-- Not configured
-
----
-
-*Integration audit: 2026-11-22*
+**⚠️ CRITICAL WARNING**: The ngrok URL (`https://cocoa-oblivion-throng.ngrok-free.dev`) is temporary and **will expire**. Always verify the backend/tunnel status *before* modifying the frontend if finance data fails to load.
