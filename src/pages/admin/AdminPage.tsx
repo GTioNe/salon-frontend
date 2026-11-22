@@ -4,6 +4,7 @@ import {
   TrendingUp, Sparkles
 } from 'lucide-react';
 import { Button, Input } from '../../components/ui';
+import { AdminFinancial } from './AdminFinancial';
 import { formatCurrency, formatDate } from '../../lib/utils';
 
 export function AdminPage() {
@@ -244,31 +245,8 @@ export function AdminPage() {
           </div>
         )}
 
-        {activeTab === 'financeiro' && (
-          <div className="space-y-6 animate-fadeIn">
-            <div>
-              <h1 className="text-3xl font-bold font-display text-white">Financeiro & Caixa</h1>
-              <p className="text-sm text-zinc-400">Controle de entradas, despesas operacionais e formas de pagamento.</p>
-            </div>
+        {activeTab === 'financeiro' && <AdminFinancial />}
 
-            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
-              <h3 className="font-semibold text-white mb-4">Extrato de Movimentações</h3>
-              <div className="space-y-3">
-                {transactions.map(t => (
-                  <div key={t.id} className="flex items-center justify-between p-4 rounded-xl bg-zinc-800/40 border border-zinc-800">
-                    <div>
-                      <div className="font-medium text-white">{t.description}</div>
-                      <div className="text-xs text-zinc-400">{formatDate(t.date)} • {t.method} • <span className="text-amber-400">{t.category}</span></div>
-                    </div>
-                    <div className={`text-lg font-bold font-display ${t.type === 'in' ? 'text-emerald-400' : 'text-rose-400'}`}>
-                      {t.type === 'in' ? '+' : '−'} {formatCurrency(t.amount)}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
 
         {activeTab === 'clientes' && (
           <div className="space-y-6 animate-fadeIn">
