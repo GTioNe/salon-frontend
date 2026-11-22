@@ -4,6 +4,8 @@ import { DollarSign, TrendingUp, TrendingDown, Plus, Download } from 'lucide-rea
 import { Card, Button, Input, Badge } from '../../components/ui';
 import { formatCurrency, formatDate } from '../../lib/utils';
 
+const financialsApi = `${(import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/api\/?$/, '')}/api/admin/financials`;
+
 interface Transaction {
   id: string;
   type: 'income' | 'expense';
@@ -20,7 +22,7 @@ export function AdminFinancial() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch('/api/admin/financials');
+        const res = await fetch(financialsApi);
         const data = await res.json();
         if (Array.isArray(data)) {
           setTransactions(data);
@@ -75,7 +77,7 @@ export function AdminFinancial() {
       paymentMethod: newTransaction.paymentMethod,
     };
     try {
-      const res = await fetch('/api/admin/financials', {
+      const res = await fetch(financialsApi, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(transaction),
