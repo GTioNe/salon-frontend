@@ -1,19 +1,44 @@
-# 🌿 Nateliê Estilos Salon Website - FINALIZADO
+# 🌿 Nateliê Hair — Plataforma de Agendamento e Gestão
 
-**Status:** ✅ **Pronto para Produção** (Build limpo em 1.55s)  
-**URL de Produção:** `https://salon-frontend-opal.vercel.app`  
-**Backend Local:** `http://localhost:3001` (Rodando em `node server.js` em `C:\Users\guiil\natelie-backend`)
+Protótipo inicial desenvolvido para o **Nateliê Hair**, criado como base de teste para validar agendamento online, automação de atendimento e controle financeiro simples. A proposta do projeto é funcionar em modelo híbrido e **100% gratuito**, pensado para atender pequenos negócios sem custos fixos de ferramentas ou assinaturas.
 
-**✨ Funcionalidades Chave Implementadas:**
-- **Agendamento:** Integração Google Calendar e lógica de slots (Disponibilidade primária).
-- **WhatsApp:** Bot funcional com lógica de cancelamento (`cancelar CODIGO`) e taxa de sinal (R$50 em Dezembro).
-- **Tema:** Tema natalino (Neve/Papai Noel) e gradiente Lila/Azul (`#d8b4fe` → `#818cf8`).
-- **UI:** Ícone de Tranças & Nagôs ajustado para 215x215px.
-- **Financeiro:** Dashboard de rastreamento persistido em SQLite.
+🔗 **Acesse o projeto:** [salon-frontend-opal.vercel.app](https://salon-frontend-opal.vercel.app)
 
-**🛠️ Próximos Passos (Manutenção):**
-- **Visual:** Use `Ctrl+F5` para ver animações.
-- **Ícones:** Use os arquivos em `public/icons/` (ex: `nago-icon.png`).
-- **API:** A URL de produção deve ser configurada no Vercel como `VITE_API_URL=https://cocoa-oblivion-throng.ngrok-free.dev`.
+---
 
-**➡️ Ação:** Recarregar o site para ver as animações.
+## 💡 Proposta e Arquitetura Híbrida
+
+Este repositório representa uma versão inicial/experimental com foco em baixo custo operacional:
+* **Modelo gratuito e híbrido:** Combina hospedagem gratuita no frontend (Vercel), banco local leve (SQLite) e serviços gratuitos/acessíveis para agenda e mensagens.
+* **Foco em pequenos negócios:** Ideal para profissionais autônomos e estúdios que precisam organizar horários e cobranças/regras sem depender de sistemas pagos pesados.
+
+---
+
+## 🚀 Principais Funcionalidades
+
+* **Agendamento Inteligente:** Consulta de disponibilidade com cálculo de horários (slots) e integração com o **Google Calendar**.
+* **Automação via WhatsApp:** Bot para confirmação de agendamentos, cancelamento via código (`cancelar CODIGO`) e regras de sinal para períodos de alta demanda.
+* **Painel Financeiro:** Controle básico de entradas e agendamentos persistido em **SQLite**.
+* **Interface Temática e Responsiva:** Layout adaptado para celular, com suporte a temas sazonais.
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+* **Frontend:** React, Vite, CSS3 (hospedado na Vercel)
+* **Backend:** Node.js, Express
+* **Banco de Dados:** SQLite
+* **Integrações:** Google Calendar API, WhatsApp Web (`whatsapp-web.js`)
+
+---
+
+## ⚙️ Configuração e Execução Local
+
+### Pré-requisitos
+* Node.js (v18+)
+* Conta Google com acesso à API do Google Calendar configurada
+
+### 1. Clonando o repositório
+```bash
+git clone [https://github.com/GTioNe/salon-frontend.git](https://github.com/GTioNe/salon-frontend.git)
+cd salon-frontend
