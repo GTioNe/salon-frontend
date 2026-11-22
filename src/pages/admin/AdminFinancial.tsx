@@ -22,7 +22,7 @@ export function AdminFinancial() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch(financialsApi);
+        const res = await fetch(financialsApi, { headers: { 'ngrok-skip-browser-warning': 'true' } });
         const data = await res.json();
         if (Array.isArray(data)) {
           setTransactions(data);

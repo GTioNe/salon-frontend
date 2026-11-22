@@ -1,231 +1,185 @@
 import { motion } from 'framer-motion';
-import { Calendar, Users, DollarSign, TrendingUp, CheckCircle, XCircle, AlertCircle, Scissors } from 'lucide-react';
-import { Card, Badge, Button } from '../../components/ui';
-import { formatCurrency, formatDate, formatTime } from '../../lib/utils';
+import { DollarSign, TrendingUp, Users, Calendar, Scissors } from 'lucide-react';
+import { Button } from '../../components/ui';
+import { useNavigate } from 'react-router-dom';
+import { formatCurrency, formatTime } from '../../lib/utils';
 import { useSalonStore } from '../../store/salonStore';
-import { STATUS_LABELS, type AppointmentStatus } from '../../types';
+import { STATUS_LABELS } from '../../types';
 
 export function AdminDashboard() {
-  const { getDashboardMetrics, getAppointmentsByDate, professionals } = useSalonStore();
+  const navigate = useNavigate();
+  const { getDashboardMetrics, getAppointmentsByDate } = useSalonStore();
   const metrics = getDashboardMetrics();
   const today = new Date().toISOString().split('T')[0];
   const todayAppointments = getAppointmentsByDate(today);
-  const pendingAppointments = todayAppointments.filter((a) => a.status === 'pending');
-  const confirmedAppointments = todayAppointments.filter((a) => a.status === 'confirmed');
 
+  // Cards with click → navegar para a página específica
   const metricCards = [
-    { label: 'Faturamento Hoje', value: formatCurrency(metrics.todayRevenue), icon: DollarSign, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-    { label: 'Faturamento Mês', value: formatCurrency(metrics.monthRevenue), icon: TrendingUp, color: 'text-champagne-400', bg: 'bg-champagne-500/10' },
-    { label: 'Agendamentos Hoje', value: metrics.todayAppointments.toString(), icon: Calendar, color: 'text-blue-400', bg: 'bg-blue-500/10' },
-    { label: 'Novos Clientes', value: metrics.newClientsThisMonth.toString(), icon: Users, color: 'text-roseGold-400', bg: 'bg-roseGold-500/10' },
+    { id: 'faturamento-hoje', label: 'Faturamento Hoje', value: formatCurrency(metrics.todayRevenue), icon: DollarSign, color: 'text-rose-400', bg: 'bg-rose-500/10' },
+    { id: 'faturamento-mes', label: 'Faturamento Mês', value: formatCurrency(metrics.monthRevenue), icon: TrendingUp, color: 'text-champagne-400', bg: 'bg-champagne-500/10' },
+    { id: 'agendamentos-hoje', label: 'Agendamentos Hoje', value: metrics.todayAppointments.toString(), icon: Calendar, color: 'text-blue-400', bg: 'bg-blue-500/10' },
+    { id: 'novos-clientes', label: 'Novos Clientes', value: metrics.newClientsThisMonth.toString(), icon: Users, color: 'text-amber-400', bg: 'bg-amber-500/10' },
   ];
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
-      >
-        <div>
-          <h1 className="font-display font-bold text-3xl gradient-text">Dashboard</h1>
-          <p className="text-zinc-400 mt-1">Visão geral do salão - {formatDate(today)}</p>
+    <div className="flex min-h-screen bg-[#17161a] text-zinc-100">
+      {/* Header global */}
+      <header className="border-b border-white/[0.06] backdrop-blur-sm bg-[rgb(23,22,26)]">
+        <div className="max-w-[1400px] mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Scissors className="w-5 h-5 text-amber-400" />
+            <h1 className="font-display font-bold text-xl tracking-wider">Nateliê Admin</h1>
+          </div>
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="sm" onClick={() => navigate('/admin/financeiro')}>
+              <DollarSign className="w-4 h-4 mr-1" />
+              Financeiro
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/admin/agenda')}>
+              <Calendar className="w-4 h-4 mr-1" />
+              Agenda
+            </Button>
+          </div>
         </div>
-        <div className="flex gap-3">
-          <Button variant="secondary">Exportar Relatório</Button>
-          <Button>Novo Agendamento</Button>
+      </header>
+
+      {/* Main content */}
+      <main className="flex-1 overflow-y-auto">
+        {/* Metric Strip */}
+        <div className="max-w-[1400px] mx-auto px-6 py-4 grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {metricCards.map((card) => (
+            <motion.div
+              key={card.id}
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: 'spring', stiffness: 120, damping: 15 }}
+              className="bg-[rgb(23,22,26)] border border-white/[0.04] rounded-xl p-5 hover:border-white/[0.08] transition-focus focus:outline-none focus:ring-2 focus:ring-champagne-500/20"
+            >
+              <div className="flex items-between justify-between">
+                <p className="text-sm text-zinc-400 uppercase tracking-wider">{card.label}</p>
+                <p className={`font-display font-bold text-2xl ${card.color}`}>
+                  {card.value}
+                </p>
+              </div>
+              <p className="text-xs text-zinc-400 mt-1 opacity-60">R$ / Qtde / Mês</p>
+            </motion.div>
+          ))}
         </div>
-      </motion.div>
 
-      {/* Metrics Grid */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
-      >
-        {metricCards.map((metric, i) => (
-          <motion.div
-            key={metric.label}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.08 }}
-            className="glass-card p-6"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-zinc-400 text-sm mb-1">{metric.label}</p>
-                <p className="font-display font-bold text-2xl lg:text-3xl">{metric.value}</p>
-              </div>
-              <div className={`w-12 h-12 rounded-xl ${metric.bg} flex items-center justify-center`}>
-                <metric.icon className={`w-6 h-6 ${metric.color}`} />
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </motion.div>
+        {/* Today's Appointments Table */}
+        <div className="max-w-[1400px] mx-auto px-6 py-6">
+          <h2 className="text-lg font-display font-semibold text-white mb-4 border-b border-white/[0.04] pb-4">
+            Próximos Agendamentos Confirmados
+          </h2>
 
-      {/* Today's Agenda + Quick Stats */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="grid lg:grid-cols-3 gap-6"
-      >
-        {/* Today's Appointments */}
-        <motion.div className="lg:col-span-2">
-          <Card className="glass-card p-0 overflow-hidden">
-            <div className="p-6 border-b border-white/10 flex items-center justify-between">
-              <h2 className="font-display font-semibold text-xl gradient-text">
-                Agenda de Hoje
-              </h2>
-              <Badge variant="premium" className="text-sm">
-                {todayAppointments.length} agendamentos
-              </Badge>
-            </div>
-
-            <div className="divide-y divide-white/5">
-              {todayAppointments.length === 0 ? (
-                <div className="p-12 text-center">
-                  <Calendar className="w-16 h-16 text-zinc-600 mx-auto mb-4" />
-                  <p className="text-zinc-400">Nenhum agendamento para hoje</p>
-                </div>
-              ) : (
-                todayAppointments.map((apt, i) => (
-                  <motion.div
-                    key={apt.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.05 }}
-                    className="p-4 hover:bg-white/5 transition-colors flex items-center gap-4"
-                  >
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${getStatusBg(apt.status)}`}>
-                      {(function () {
-                        const Icon = getStatusIcon(apt.status);
-                        return <Icon className={`w-6 h-6 ${getStatusTextColor(apt.status)}`} />;
-                      })()}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3">
-                        <p className="font-medium text-zinc-100 truncate">{apt.clientName}</p>
-                        <Badge className={`capitalize ${getStatusBadgeClass(apt.status)}`}>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-white/[0.04] text-zinc-400">
+                  <th className="pb-3 font-medium">Cliente</th>
+                  <th className="pb-3 font-medium">Serviço</th>
+                  <th className="pb-3 font-medium text-right">Data / Horário</th>
+                  <th className="pb-3 font-medium text-right">Valor</th>
+                  <th className="pb-3 font-medium text-right">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/[0.03]">
+                {todayAppointments.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="p-8 text-center text-zinc-500">
+                      <Calendar className="w-12 h-12 mx-auto mb-3" />
+                      <p>Nenhum agendamento para hoje</p>
+                    </td>
+                  </tr>
+                ) : (
+                  todayAppointments.map((apt) => (
+                    <tr key={apt.id} className="hover:bg-white/[0.01] transition-colors">
+                      <td className="py-3 font-medium text-zinc-300">{apt.clientName}</td>
+                      <td className="py-3 text-zinc-300 truncate">{apt.serviceNames.join(', ')}</td>
+                      <td className="py-3 text-right text-zinc-400 text-sm">
+                        {formatTime(apt.time)}
+                      </td>
+                      <td className="py-3 text-right font-medium text-champagne-300">
+                        {formatCurrency(apt.totalPrice)}
+                      </td>
+                      <td className="py-3 text-right">
+                        <span className={`px-2 py-1 rounded text-xs font-medium ${getStatusBg(apt.status)}`}>
                           {STATUS_LABELS[apt.status]}
-                        </Badge>
-                      </div>
-                      <p className="text-zinc-400 text-sm">
-                        {apt.serviceNames.join(', ')} • {apt.professionalName || 'Profissional flexível'}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold text-champagne-300">{formatTime(apt.time)}</p>
-                      <p className="text-zinc-500 text-sm">{formatCurrency(apt.totalPrice)}</p>
-                    </div>
-                  </motion.div>
-                ))
-              )}
-            </div>
-          </Card>
-        </motion.div>
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
 
-        {/* Quick Stats Sidebar */}
-        <motion.div>
-          <Card className="glass-card p-6">
-            <h3 className="font-display font-semibold text-lg gradient-text mb-4">Resumo Rápido</h3>
-            <div className="space-y-4">
-              <QuickStat label="Pendentes" value={pendingAppointments.length} icon={AlertCircle} color="text-amber-400" />
-              <QuickStat label="Confirmados" value={confirmedAppointments.length} icon={CheckCircle} color="text-emerald-400" />
-              <QuickStat label="Profissionais" value={professionals.length} icon={Users} color="text-champagne-400" />
-              <QuickStat label="Ocupação Mês" value={`${metrics.occupancyRate}%`} icon={TrendingUp} color="text-blue-400" />
-            </div>
-          </Card>
+        {/* Quick Actions */}
+        <div className="max-w-[1400px] mx-auto px-6 py-6">
+          <h2 className="text-lg font-display font-semibold text-white mb-4 border-b border-white/[0.04] pb-4">
+            Ações Rápidas
+          </h2>
 
-          <Card className="glass-card p-6 mt-6">
-            <h3 className="font-display font-semibold text-lg gradient-text mb-4">Ações Rápidas</h3>
-            <div className="space-y-3">
-              <Button className="w-full justify-start gap-3" variant="secondary">
-                <Scissors className="w-5 h-5" />
-                Adicionar Serviço
-              </Button>
-              <Button className="w-full justify-start gap-3" variant="secondary">
-                <Users className="w-5 h-5" />
-                Cadastrar Cliente
-              </Button>
-              <Button className="w-full justify-start gap-3" variant="secondary">
-                <Calendar className="w-5 h-5" />
-                Nova Agenda
-              </Button>
-              <Button className="w-full justify-start gap-3" variant="secondary">
-                <DollarSign className="w-5 h-5" />
-                Ver Financeiro
-              </Button>
-            </div>
-          </Card>
-        </motion.div>
-      </motion.div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {/* Adicionar Serviço */}
+            <Button
+              variant="secondary"
+              onClick={() => {
+                navigate('/admin/servicos');
+                alert('Funcionalidade: cadastrar novo serviço no catálogo');
+              }}
+              className="justify-start gap-2 px-4 py-2.5 rounded-xl text-sm font-medium"
+            >
+              <Scissors className="w-4 h-4" />
+              <span>Adicionar Serviço</span>
+            </Button>
+
+            {/* Cadastrar Cliente */}
+            <Button
+              variant="secondary"
+              onClick={() => {
+                navigate('/admin/clientes');
+                alert('Funcionalidade: cadastrar novo cliente');
+              }}
+              className="justify-start gap-2 px-4 py-2.5 rounded-xl text-sm font-medium"
+            >
+              <Users className="w-4 h-4" />
+              <span>Cadastrar Cliente</span>
+            </Button>
+
+            {/* Nova Agenda */}
+            <Button
+              variant="secondary"
+              onClick={() => navigate('/admin/agenda')}
+              className="justify-start gap-2 px-4 py-2.5 rounded-xl text-sm font-medium"
+            >
+              <Calendar className="w-4 h-4" />
+              <span>Nova Agenda</span>
+            </Button>
+
+            {/* Ver Financeiro */}
+            <Button
+              variant="secondary"
+              onClick={() => navigate('/admin/financeiro')}
+              className="justify-start gap-2 px-4 py-2.5 rounded-xl text-sm font-medium"
+            >
+              <DollarSign className="w-4 h-4" />
+              <span>Ver Financeiro</span>
+            </Button>
+          </div>
+        </div>
+      </main>
     </div>
   );
 }
 
-interface QuickStatProps {
-  label: string;
-  value: number | string;
-  icon: typeof AlertCircle;
-  color: string;
-}
-
-function QuickStat({ label, value, icon: Icon, color }: QuickStatProps) {
-  return (
-    <div className="flex items-center gap-4 p-4 bg-white/5 rounded-xl">
-      <div className={`w-10 h-10 rounded-lg ${color}/10 flex items-center justify-center`}>
-        <Icon className={`w-5 h-5 ${color}`} />
-      </div>
-      <div className="flex-1">
-        <p className="text-zinc-400 text-sm">{label}</p>
-        <p className="font-display font-bold text-xl">{value}</p>
-      </div>
-    </div>
-  );
-}
-
-function getStatusBg(status: AppointmentStatus): string {
-  const colors: Record<AppointmentStatus, string> = {
-    pending: 'bg-amber-500/20',
-    confirmed: 'bg-emerald-500/20',
-    completed: 'bg-blue-500/20',
-    cancelled: 'bg-rose-500/20',
+function getStatusBg(status: string): string {
+  const colors: Record<string, string> = {
+    pending: 'bg-amber-500/15',
+    confirmed: 'bg-emerald-500/15',
+    completed: 'bg-blue-500/15',
+    cancelled: 'bg-rose-500/15',
   };
-  return colors[status] || 'bg-zinc-500/20';
-}
-
-function getStatusIcon(status: AppointmentStatus) {
-  const icons: Record<AppointmentStatus, typeof AlertCircle> = {
-    pending: AlertCircle,
-    confirmed: CheckCircle,
-    completed: CheckCircle,
-    cancelled: XCircle,
-  };
-  return icons[status] || AlertCircle;
-}
-
-function getStatusTextColor(status: AppointmentStatus): string {
-  const colors: Record<AppointmentStatus, string> = {
-    pending: 'text-amber-400',
-    confirmed: 'text-emerald-400',
-    completed: 'text-blue-400',
-    cancelled: 'text-rose-400',
-  };
-  return colors[status] || 'text-zinc-400';
-}
-
-function getStatusBadgeClass(status: AppointmentStatus): string {
-  const classes: Record<AppointmentStatus, string> = {
-    pending: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
-    confirmed: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
-    completed: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-    cancelled: 'bg-rose-500/20 text-rose-400 border-rose-500/30',
-  };
-  return classes[status] || 'bg-zinc-500/20 text-zinc-400 border-zinc-500/30';
+  return colors[status] || 'bg-zinc-500/15';
 }

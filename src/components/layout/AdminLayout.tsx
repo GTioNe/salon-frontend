@@ -30,7 +30,7 @@ export function AdminLayout() {
 
       {/* Sidebar */}
       <aside 
-        className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-zinc-900 border-r border-zinc-800 transform transition-transform duration-300 ease-in-out lg:translate-x-0 flex flex-col
+        className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-[#17161a] border-r border-white/[0.06] transform transition-transform duration-300 ease-in-out lg:translate-x-0 flex flex-col
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         `}
       >
@@ -51,8 +51,8 @@ export function AdminLayout() {
               to={item.path}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                 location.pathname === item.path 
-                  ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' 
-                  : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
+                  ? 'bg-rose-400/10 text-rose-200 border border-rose-300/20' 
+                  : 'text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-100'
               }`}
             >
               <item.icon className="w-4 h-4 flex-shrink-0" />
