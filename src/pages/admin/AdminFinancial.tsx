@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Card, Button, Input, Badge, Modal } from '../../components/ui';
+import { useSalonStore } from '../../store/salonStore';
 import { formatCurrency, formatDate } from '../../lib/utils';
 
 const financialsApi = `${(import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/api\/?$/, '')}/api/admin/financials`;
@@ -19,6 +20,8 @@ interface Transaction {
   date: string;
   paymentMethod?: string;
   status?: 'pending' | 'confirmed';
+  clientId?: string;
+  serviceId?: string;
 }
 
 export function AdminFinancial() {
@@ -51,6 +54,8 @@ export function AdminFinancial() {
     load();
   }, []);
 
+  const { clients, services } = useSalonStore();
+
   const [newTransaction, setNewTransaction] = useState<Partial<Transaction>>({
     type: 'income',
     category: '',
@@ -58,6 +63,8 @@ export function AdminFinancial() {
     amount: 0,
     date: new Date().toISOString().split('T')[0],
     paymentMethod: '',
+    clientId: '',
+    serviceId: '',
   });
 
   const filteredTransactions = useMemo(() => {
@@ -166,6 +173,8 @@ export function AdminFinancial() {
       amount: Number(newTransaction.amount)!,
       date: newTransaction.date!,
       paymentMethod: newTransaction.paymentMethod,
+      clientId: newTransaction.clientId || undefined,
+      serviceId: newTransaction.serviceId || undefined,
     };
     try {
       const res = await fetch(financialsApi, {
@@ -544,13 +553,62 @@ export function AdminFinancial() {
           />
 
           {newTransaction.type === 'income' && (
-            <Input
-              label="Forma de pagamento (opcional)"
-              placeholder="Ex: Pix, Dinheiro, Débito"
-              value={newTransaction.paymentMethod}
-              onChange={(e) => setNewTransaction({ ...newTransaction, paymentMethod: e.target.value })}
-            />
+            <>
+              <label className="block text-sm text-[#8a8f98] mb-3">Forma de pagamento</label>
+              <div className="flex gap-2 flex-wrap mb-4">
+                {['PIX', 'Dinheiro', 'Débito', 'Crédito'].map((method) => (
+                  <button
+                    key={method}
+                    type="button"
+                    onClick={() => setNewTransaction({ ...newTransaction, paymentMethod: method })}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all border ${
+                      newTransaction.paymentMethod === method
+                        ? 'bg-stripe-primary text-white border-stripe-primary shadow-lg shadow-stripe-primary/30'
+                        : 'bg-[#12122b] border-white/10 text-[#8a8f98] hover:text-white hover:border-white/30'
+                    }`}
+                  >
+                    {method}
+                  </button>
+                ))}
+              </div>
+            </>
           )}
+
+          <div className="mt-4">
+            <label className="block text-sm text-[#8a8f98] mb-2">Cliente</label>
+            <select
+              value={newTransaction.clientId || ''}
+              onChange={(e) => setNewTransaction({ ...newTransaction, clientId: e.target.value || undefined })}
+              className="w-full bg-[#12122b] border border-white/[0.06] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-lilac-500"
+            >
+              <option value="">Nenhum / Manual</option>
+              {clients.map((c) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="mt-4">
+            <label className="block text-sm text-[#8a8f98] mb-2">Serviço</label>
+            <select
+              value={newTransaction.serviceId || ''}
+              onChange={(e) => {
+                const svc = services.find((s) => s.id === e.target.value);
+                setNewTransaction({
+                  ...newTransaction,
+                  serviceId: svc ? svc.id : undefined,
+                  description: svc ? `${svc.name}` : '',
+                  amount: svc ? svc.price : Number(newTransaction.amount) || 0,
+                });
+              }}
+              className="w-full bg-[#12122b] border border-white/[0.06] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-lilac-500"
+            >
+              <option value="">Selecionar serviço</option>
+              {services.map((s) => (
+                <option key={s.id} value={s.id}>{s.name} - R$ {s.price},00</option>
+              ))}
+            </select>
+          </div>
 
           <div className="flex gap-3 mt-6">
             <Button
