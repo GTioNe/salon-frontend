@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Lock, Scissors, Eye, EyeOff } from 'lucide-react';
 
-const ADMIN_PASSWORD = 'admin'; // ponytail: simple password gate; upgrade to JWT + backend auth when multiple admins are needed
+const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'Maite7969'; // ponytail: senha via env; troque definindo VITE_ADMIN_PASSWORD no .env ou Vercel
 
 export function AdminGuard() {
   const [isAuthenticated, setIsAuthenticated] = useState(
