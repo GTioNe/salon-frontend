@@ -48,6 +48,7 @@ interface SalonState {
   addService: (service: Omit<Service, 'id'>) => Service;
   updateService: (id: string, data: Partial<Service>) => void;
   deleteService: (id: string) => void;
+  getServices: () => Promise<Service[]>;
   
   // Actions - Professionals
   addProfessional: (prof: Omit<Professional, 'id'>) => Professional;
@@ -67,6 +68,8 @@ interface SalonState {
   getAppointmentsByDate: (date: string) => Appointment[];
   getAppointmentsByProfessional: (professionalId: string, date: string) => Appointment[];
   getAvailableSlots: (date: string, professionalId?: string, duration?: number, serviceId?: string) => Promise<string[]>;
+  getAppointments: () => Promise<Appointment[]>;
+  getFinancials: () => Promise<Transaction[]>;
 
   // Actions - Financials
   addFinancial: (transaction: Transaction) => void;
@@ -118,16 +121,56 @@ export const useSalonStore = create<SalonState>()(
         return newService;
       },
       
-      updateService: (id, data) => {
-        set((state) => ({
-          services: state.services.map((s) => (s.id === id ? { ...s, ...data } : s)),
-        }));
+      updateService: async (id, data) => {
+        try {
+          const baseUrl = getApiBase();
+          await fetch(`${baseUrl}/api/admin/services/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
+            body: JSON.stringify(data),
+          });
+          // Also update local state immediately
+          set((state) => ({
+            services: state.services.map((s) => (s.id === id ? { ...s, ...data } : s)),
+          }));
+        } catch (e) {
+          console.error('Erro ao atualizar serviço na API:', e);
+          // Fallback: update local state only
+          set((state) => ({
+            services: state.services.map((s) => (s.id === id ? { ...s, ...data } : s)),
+          }));
+        }
       },
       
       deleteService: (id) => {
         set((state) => ({
           services: state.services.filter((s) => s.id !== id),
         }));
+      },
+
+      getServices: async () => {
+        try {
+          const res = await fetch(`${getApiBase()}/api/services`, {
+            headers: { 'ngrok-skip-browser-warning': 'true' },
+          });
+          const data = await res.json();
+          if (!Array.isArray(data)) return get().services;
+          const mapped: Service[] = data.map((s: any) => ({
+            id: String(s.id),
+            name: s.name,
+            description: s.description || '',
+            price: Number(s.price) || 0,
+            duration: Number(s.durationMin ?? s.duration ?? 60),
+            category: s.category === 'quimica' ? 'quimica' : 'trancas',
+            image: s.image || undefined,
+            popular: !!s.popular,
+          }));
+          set({ services: mapped });
+          return mapped;
+        } catch (e) {
+          console.error('Erro ao carregar serviços da API:', e);
+          return get().services;
+        }
       },
       
       // Professionals
@@ -248,6 +291,41 @@ export const useSalonStore = create<SalonState>()(
         }
       },
 
+      getAppointments: async () => {
+        try {
+          const res = await fetch(`${getApiBase()}/api/admin/reservations`, {
+            headers: { 'ngrok-skip-browser-warning': 'true' },
+          });
+          const data = await res.json();
+          if (!Array.isArray(data)) return get().appointments;
+          const mapped: Appointment[] = data.map((r: any) => ({
+            id: String(r.id ?? r.code),
+            clientId: String(r.client_zap || ''),
+            clientName: r.client_name || 'Cliente',
+            clientPhone: r.client_zap || '',
+            clientEmail: r.client_email || '',
+            serviceIds: r.service_id ? [String(r.service_id)] : [],
+            serviceNames: r.service_name ? [r.service_name] : [],
+            professionalId: undefined,
+            professionalName: undefined,
+            date: r.date,
+            time: (r.time || '09:00').slice(0, 5),
+            duration: 60,
+            totalPrice: Number(r.service_price ?? 0),
+            status: (r.status === 'confirmed' ? 'confirmed' : r.status === 'pending' ? 'pending' : 'pending') as AppointmentStatus,
+            notes: r.notes || undefined,
+            createdAt: r.created_at || new Date().toISOString(),
+            updatedAt: r.updated_at || new Date().toISOString(),
+            confirmationCode: r.code,
+          }));
+          set({ appointments: mapped });
+          return mapped;
+        } catch (e) {
+          console.error('Erro ao carregar agendamentos da API:', e);
+          return get().appointments;
+        }
+      },
+      
       // Financials
       addFinancial: (transaction) => {
         set((state) => ({ financials: [transaction, ...state.financials] }));
@@ -257,6 +335,21 @@ export const useSalonStore = create<SalonState>()(
         set((state) => ({
           financials: state.financials.map((f) => (f.id === id ? { ...f, status } : f)),
         }));
+      },
+
+      getFinancials: async () => {
+        try {
+          const res = await fetch(`${getApiBase()}/api/admin/financials`, {
+            headers: { 'ngrok-skip-browser-warning': 'true' },
+          });
+          const data = await res.json();
+          if (!Array.isArray(data)) return get().financials;
+          set({ financials: data });
+          return data;
+        } catch (e) {
+          console.error('Erro ao carregar financeiros da API:', e);
+          return get().financials;
+        }
       },
       
       // UI Actions

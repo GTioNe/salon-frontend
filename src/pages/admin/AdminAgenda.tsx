@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   Calendar as CalendarIcon, ChevronLeft, ChevronRight, Plus, MessageCircle
@@ -25,7 +25,8 @@ function formatTimeRange(start: string, durationMin: number) {
 }
 
 export function AdminAgenda() {
-  const { getAppointmentsByDate, addAppointment, updateAppointmentStatus, professionals } = useSalonStore();
+  const { getAppointmentsByDate, getAppointments, getServices, addAppointment, updateAppointmentStatus, professionals } = useSalonStore();
+  useEffect(() => { getAppointments(); getServices(); }, [getAppointments, getServices]);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [view, setView] = useState<'week' | 'day'>('week');
   const [selectedStylist, setSelectedStylist] = useState<string>('all');

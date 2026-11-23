@@ -1,24 +1,26 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Search, Scissors, Sparkles, Crown, MessageCircle, X } from 'lucide-react';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Card, Badge, Button, Input, Select } from '../components/ui';
 import { formatCurrency, formatDuration } from '../lib/utils';
-import { MOCK_SERVICES } from '../data/mockData';
+import { useSalonStore } from '../store/salonStore';
 import { CATEGORIES, type ServiceCategory } from '../types';
 
 export function ServicesPage() {
+  const { services: storeServices, getServices } = useSalonStore();
+  useEffect(() => { getServices(); }, [getServices]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<ServiceCategory | 'all'>('all');
   const [sortBy, setSortBy] = useState<'popular' | 'price-asc' | 'price-desc' | 'name'>('popular');
   const [showPackageDetails, setShowPackageDetails] = useState(false);
 
   const filteredServices = useMemo(() => {
-    let services = [...MOCK_SERVICES];
+    let list = [...(storeServices || [])];
 
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      services = services.filter(s => 
+      list = list.filter((s: any) => 
         s.name.toLowerCase().includes(query) ||
         s.description.toLowerCase().includes(query) ||
         s.category.toLowerCase().includes(query)
@@ -26,10 +28,10 @@ export function ServicesPage() {
     }
 
     if (selectedCategory !== 'all') {
-      services = services.filter(s => s.category === selectedCategory);
+      list = list.filter((s: any) => s.category === selectedCategory);
     }
 
-    services.sort((a, b) => {
+    list.sort((a: any, b: any) => {
       switch (sortBy) {
         case 'popular':
           return (b.popular ? 1 : 0) - (a.popular ? 1 : 0);
@@ -44,12 +46,12 @@ export function ServicesPage() {
       }
     });
 
-    return services;
-  }, [searchQuery, selectedCategory, sortBy]);
+    return list;
+  }, [searchQuery, selectedCategory, sortBy, storeServices]);
 
   const categoriesWithCount = CATEGORIES.map(cat => ({
     ...cat,
-    count: MOCK_SERVICES.filter(s => s.category === cat.id).length,
+    count: (storeServices || []).filter((s: any) => s.category === cat.id).length,
   }));
 
   return (
@@ -68,7 +70,7 @@ export function ServicesPage() {
           Todos os nossos serviços
         </h1>
         <p className="text-zinc-400 text-lg">
-          {MOCK_SERVICES.length} serviços premium em {CATEGORIES.length} categorias.
+          {storeServices?.length || 0} serviços premium em {CATEGORIES.length} categorias.
           Qualidade certificada em cada detalhe.
         </p>
       </motion.header>
@@ -199,7 +201,7 @@ export function ServicesPage() {
           </div>
 
           <div className="text-zinc-400 text-sm self-center">
-            {filteredServices.length} de {MOCK_SERVICES.length} serviços
+            {filteredServices.length} de {(storeServices?.length || 0)} serviços
           </div>
         </div>
       </motion.section>

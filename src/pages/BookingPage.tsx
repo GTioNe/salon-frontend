@@ -3,7 +3,6 @@ import { Calendar, Clock, User, Check, ChevronLeft, ChevronRight, MessageCircle,
 import { Button, Input } from '../components/ui';
 import { ChristmasEffects } from '../components/ChristmasEffects';
 import { formatCurrency, formatDate, formatDuration } from '../lib/utils';
-import { MOCK_SERVICES } from '../data/mockData';
 import { useSalonStore } from '../store/salonStore';
 import { CATEGORIES, type Service } from '../types';
 
@@ -45,6 +44,8 @@ interface ConfirmationData {
 }
 
 export function BookingPage() {
+  const { services: storeServices, getServices } = useSalonStore();
+  useEffect(() => { getServices(); }, [getServices]);
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState('');
@@ -81,10 +82,10 @@ export function BookingPage() {
       setLoadingSlots(true);
       try {
         const totalDuration = selectedServices.reduce((sum: number, id: string) => {
-          const s = MOCK_SERVICES.find((svc) => svc.id === id);
+          const s = storeServices.find((svc) => svc.id === id);
           return sum + (s?.duration || 0);
         }, 0);
-        const slots = await storeGetAvailableSlots(selectedDate, undefined, totalDuration, selectedServices[0] || 'nago-fem');
+        const slots = await storeGetAvailableSlots(selectedDate, undefined, totalDuration, selectedServices[0] || undefined);
         setAvailableSlots(slots);
       } catch (err) {
         console.error('Error fetching slots:', err);
@@ -95,7 +96,7 @@ export function BookingPage() {
     fetchSlots();
   }, [selectedDate, selectedServices, storeGetAvailableSlots]);
 
-  const selectedServicesData = selectedServices.map((id) => MOCK_SERVICES.find((s) => s.id === id)).filter(Boolean) as Service[];
+  const selectedServicesData = storeServices.filter((s) => selectedServices.includes(s.id));
   const totalPrice = selectedServicesData.reduce((sum: number, s: Service) => sum + s.price, 0);
   const totalDuration = selectedServicesData.reduce((sum: number, s: Service) => sum + s.duration, 0);
 
@@ -297,6 +298,7 @@ export function BookingPage() {
               selectedServices={selectedServices}
               onSelectServices={setSelectedServices}
               onNext={nextStep}
+              storeServices={storeServices}
             />
           )}
           
@@ -374,14 +376,15 @@ export function BookingPage() {
   );
 }
 
-function Step1Services({ selectedServices, onSelectServices, onNext }: { 
+function Step1Services({ selectedServices, onSelectServices, onNext, storeServices }: { 
   selectedServices: string[];
   onSelectServices: (services: string[]) => void;
   onNext: () => void;
+  storeServices: any[];
 }) {
   const categoriesWithServices = CATEGORIES.map((cat) => ({
     ...cat,
-    services: MOCK_SERVICES.filter((s) => s.category === cat.id),
+    services: (storeServices || []).filter((s) => s.category === cat.id),
   }));
 
   return (
@@ -484,9 +487,9 @@ function Step1Services({ selectedServices, onSelectServices, onNext }: {
           </div>
           <div className="text-zinc-700 dark:text-zinc-300 text-sm">
             Total estimado: <span className="font-bold text-amber-700 dark:text-amber-300">
-              {formatCurrency(selectedServices.reduce((sum: number, id: string) => sum + (MOCK_SERVICES.find((s) => s.id === id)?.price || 0), 0))}
+              {formatCurrency(selectedServices.reduce((sum: number, id: string) => sum + (storeServices.find((s) => s.id === id)?.price || 0), 0))}
             </span> • 
-            {`aproximadamente ` + formatDuration(selectedServices.reduce((sum: number, id: string) => sum + (MOCK_SERVICES.find((s) => s.id === id)?.duration || 0), 0))}
+            {`aproximadamente ` + formatDuration(selectedServices.reduce((sum: number, id: string) => sum + (storeServices.find((s) => s.id === id)?.duration || 0), 0))}
           </div>
         </div>
       )}

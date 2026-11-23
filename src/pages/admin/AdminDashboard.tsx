@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { DollarSign, Calendar, Clock, Sparkles, Wallet } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { formatCurrency, formatTime } from '../../lib/utils';
 import { useSalonStore } from '../../store/salonStore';
 
@@ -96,7 +97,8 @@ const EXAMPLE_DATA = {
 
 export function AdminDashboard() {
   const navigate = useNavigate();
-  const { getDashboardMetrics, getAppointmentsByDate } = useSalonStore();
+  const { getDashboardMetrics, getAppointmentsByDate, getAppointments, getFinancials, getServices } = useSalonStore();
+  useEffect(() => { getAppointments(); getFinancials(); getServices(); }, [getAppointments, getFinancials, getServices]);
   const metrics = getDashboardMetrics();
   const today = new Date().toISOString().split('T')[0];
   const todayAppointments = getAppointmentsByDate(today);

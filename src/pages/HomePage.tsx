@@ -2,15 +2,18 @@ import { Link } from 'react-router-dom';
 import { MapPin, MessageCircle, ArrowRight, Clock, Sparkles, CheckCircle2, Scissors } from 'lucide-react';
 import { Button } from '../components/ui';
 import { formatCurrency, formatDuration } from '../lib/utils';
-import { MOCK_SERVICES } from '../data/mockData';
+import { useSalonStore } from '../store/salonStore';
 
 export function HomePage() {
+  const { services, getServices } = useSalonStore();
+  getServices();
+  
   const featuredServices = [
-    MOCK_SERVICES.find(s => s.id === 'progressiva-global-longo'),
-    MOCK_SERVICES.find(s => s.id === 'escova-longa'),
-    MOCK_SERVICES.find(s => s.id === 'nago-solta'),
-    MOCK_SERVICES.find(s => s.id === 'nago-masc')
-  ].filter((s): s is typeof MOCK_SERVICES[0] => !!s);
+    services?.find(s => s.id === 'progressiva-global-longo'),
+    services?.find(s => s.id === 'escova-longa'),
+    services?.find(s => s.id === 'nago-solta'),
+    services?.find(s => s.id === 'nago-masc')
+  ].filter((s): s is typeof services[0] => !!s);
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 selection:bg-pink-500 selection:text-zinc-950">
