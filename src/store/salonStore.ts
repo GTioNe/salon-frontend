@@ -113,32 +113,46 @@ export const useSalonStore = create<SalonState>()(
       
       // Services
       addService: (serviceData) => {
-        const newService: Service = {
-          ...serviceData,
-          id: generateId(),
-        };
+        const id = generateId();
+        const newService: Service = { ...serviceData, id };
+        // Optimistic local add
         set((state) => ({ services: [...state.services, newService] }));
+        // Sync to backend (fire-and-forget)
+        const payload: any = { id, name: serviceData.name, description: serviceData.description, price: serviceData.price, category: serviceData.category, popular: serviceData.popular };
+        payload.durationMin = serviceData.duration;
+        fetch(`${getApiBase()}/api/admin/services`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
+          body: JSON.stringify(payload),
+        })
+          .then(() => get().getServices())
+          .catch((e) => console.error('Erro ao criar serviço na API:', e));
         return newService;
       },
       
       updateService: async (id, data) => {
+        // Optimistic local update
+        set((state) => ({
+          services: state.services.map((s) => (s.id === id ? { ...s, ...data } : s)),
+        }));
         try {
           const baseUrl = getApiBase();
-          await fetch(`${baseUrl}/api/admin/services/${id}`, {
+          // Map frontend field "duration" to backend column "durationMin"
+          const payload: any = { ...data };
+          if (data.duration !== undefined) {
+            payload.durationMin = data.duration;
+            delete payload.duration;
+          }
+          const res = await fetch(`${baseUrl}/api/admin/services/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
-            body: JSON.stringify(data),
+            body: JSON.stringify(payload),
           });
-          // Also update local state immediately
-          set((state) => ({
-            services: state.services.map((s) => (s.id === id ? { ...s, ...data } : s)),
-          }));
+          if (!res.ok) throw new Error(`API ${res.status}`);
+          // Reload from API to get the real persisted values
+          await get().getServices();
         } catch (e) {
           console.error('Erro ao atualizar serviço na API:', e);
-          // Fallback: update local state only
-          set((state) => ({
-            services: state.services.map((s) => (s.id === id ? { ...s, ...data } : s)),
-          }));
         }
       },
       

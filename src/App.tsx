@@ -9,6 +9,7 @@ import { AdminFinancial } from './pages/admin/AdminFinancial';
 import { AdminClients } from './pages/admin/AdminClients';
 import { AdminServices } from './pages/admin/AdminServices';
 import { AdminSettings } from './pages/admin/AdminSettings';
+import { AdminGuard } from './components/auth/AdminGuard';
 import { ProfileSettings } from './pages/ProfileSettings';
 
 function App() {
@@ -23,16 +24,17 @@ function App() {
           <Route path="/perfil" element={<ProfileSettings />} />
         </Route>
 
-        {/* Admin routes with AdminLayout */}
-        <Route element={<AdminLayout />}>
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/agenda" element={<AdminAgenda />} />
-          <Route path="/admin/financeiro" element={<AdminFinancial />} />
-          <Route path="/admin/clientes" element={<AdminClients />} />
-          <Route path="/admin/servicos" element={<AdminServices />} />
-          <Route path="/admin/ajustes" element={<AdminSettings />} />
-          {/* Fallback for admin */}
-          <Route path="/admin/*" element={<Navigate to="/admin" replace />} />
+        {/* Admin routes - guard first, then layout */}
+        <Route path="/admin" element={<AdminGuard />}>
+          <Route element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="agenda" element={<AdminAgenda />} />
+            <Route path="financeiro" element={<AdminFinancial />} />
+            <Route path="clientes" element={<AdminClients />} />
+            <Route path="servicos" element={<AdminServices />} />
+            <Route path="ajustes" element={<AdminSettings />} />
+            <Route path="*" element={<Navigate to="/admin" replace />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

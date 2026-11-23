@@ -125,7 +125,7 @@ export function AdminLayout() {
           </div>
           
           <button
-            onClick={() => navigate('/')}
+            onClick={() => { localStorage.removeItem('natelie_admin_auth'); navigate('/'); }}
             className="flex items-center gap-3 px-3 py-2 w-full rounded-lg text-sm font-medium text-[#8a8f98] hover:bg-rose-500/10 hover:text-rose-400 transition-all border border-transparent hover:border-rose-500/20"
           >
             <LogOut className="w-4 h-4" />
